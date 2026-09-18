@@ -1,0 +1,28 @@
+# Práctica 1 - Algoritmos de búsqueda
+
+### Ejecutar
+
+```shell
+usage: main.py [-h] [-a ADDRESS] [-d DISTANCE] [-t {test-only,both}] run
+
+positional arguments:
+  run                   Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas;
+                        Sección 2 (S2): Búsqueda Informada [No implementado];
+                        Sección 3 (S3): Búsqueda local [No implementado]
+
+options:
+  -h, --help            show this help message and exit
+  -a, --address ADDRESS
+                        Dirección del punto del cual se descargará el grafo.
+  -d, --distance DISTANCE
+                        Distancia a la redonda, en metros, que abarcará el
+                        grafo.
+  -t, --test {test-only,both}
+                        Opción que indica que las pruebas unitarias se deben
+                        ejecutar. both: realiza pruebas unitarias y ejecución.
+                        test-only: solo realiza las pruebas unitarias
+```
+
+### Historial de versiones
+
+#### v0.0.1 Proyecto inicial
