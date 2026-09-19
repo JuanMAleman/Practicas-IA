@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
+from ..s1 import BFS, DFS, UCS
 import networkx as nx
-from ..s1 import BFS
 
 
 EDGES = {
@@ -39,27 +39,83 @@ def draw_graph():
 
 def test_bfs_cdmx_oax():
     path, total_distance = BFS(G).perform_search("MEX", "OAX")
-    for p, d in zip(path, ["MEX", "CVA", "OAX"]):
+    for p, d in zip(path, "MEX → CVA → OAX".split(" → ")):
         assert p == d
     assert total_distance == 405
 
 
 def test_bfs_tol_ver():
     path, total_distance = BFS(G).perform_search("TOL", "VER")
-    for p, d in zip(path, ["TOL", "MEX", "PUE", "VER"]):
+    for p, d in zip(path, "TOL → MEX → PUE → VER".split(" → ")):
         assert p == d
     assert total_distance == 420
 
 
 def test_bfs_gdl_oax():
     path, total_distance = BFS(G).perform_search("GDL", "OAX")
-    for p, d in zip(path, ["GDL", "QRO", "MEX", "CVA", "OAX"]):
+    for p, d in zip(path, "GDL → QRO → MEX → CVA → OAX".split(" → ")):
         assert p == d
     assert total_distance == 925
 
 
 def test_bfs_ver_qro():
     path, total_distance = BFS(G).perform_search("VER", "QRO")
-    for p, d in zip(path, ["VER", "PUE", "MEX", "QRO"]):
+    for p, d in zip(path, "VER → PUE → MEX → QRO".split(" → ")):
+        assert p == d
+    assert total_distance == 570
+
+
+def test_dfs_cdmx_oax():
+    path, total_distance = DFS(G).perform_search("MEX", "OAX")
+    for p, d in zip(path, "MEX → PUE → VER → OAX".split(" → ")):
+        assert p == d
+    assert total_distance == 680
+
+
+def test_dfs_tol_ver():
+    path, total_distance = DFS(G).perform_search("TOL", "VER")
+    for p, d in zip(path, "TOL → GDL → QRO → MEX → PUE → VER".split(" → ")):
+        assert p == d
+    assert total_distance == 1220
+
+
+def test_dfs_gdl_oax():
+    path, total_distance = DFS(G).perform_search("GDL", "OAX")
+    for p, d in zip(path, "GDL → TOL → MEX → PUE → VER → OAX → CVA".split(" → ")):
+        assert p == d
+    assert total_distance == 1420
+
+
+def test_dfs_ver_qro():
+    path, total_distance = DFS(G).perform_search("VER", "QRO")
+    for p, d in zip(path, "VER → OAX → PUE → MEX → TOL → GDL → QRO".split(" → ")):
+        assert p == d
+    assert total_distance == 1540
+
+
+def test_ucs_cdmx_oax():
+    path, total_distance = UCS(G).perform_search("MEX", "OAX")
+    for p, d in zip(path, "MEX → CVA → OAX".split(" → ")):
+        assert p == d
+    assert total_distance == 405
+
+
+def test_ucs_tol_ver():
+    path, total_distance = UCS(G).perform_search("TOL", "VER")
+    for p, d in zip(path, "TOL → MEX → PUE → VER".split(" → ")):
+        assert p == d
+    assert total_distance == 420
+
+
+def test_ucs_gdl_oax():
+    path, total_distance = UCS(G).perform_search("GDL", "OAX")
+    for p, d in zip(path, "GDL → TOL → MEX → CVA → OAX".split(" → ")):
+        assert p == d
+    assert total_distance == 825
+
+
+def test_ucs_ver_qro():
+    path, total_distance = UCS(G).perform_search("VER", "QRO")
+    for p, d in zip(path, "VER → PUE → MEX → QRO".split(" → ")):
         assert p == d
     assert total_distance == 570

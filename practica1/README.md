@@ -25,4 +25,6 @@ options:
 
 ### Historial de versiones
 
+#### v0.0.2 Plantilla completa de la fase 1
+
 #### v0.0.1 Proyecto inicial

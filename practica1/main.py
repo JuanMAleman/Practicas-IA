@@ -1,3 +1,4 @@
+from src.tests import s1_test
 from src import s1
 import argparse
 import logging
@@ -16,6 +17,7 @@ def valid_distance(value: str) -> float:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
+    # https://docs.python.org/3.14/library/argparse.html
     parser = argparse.ArgumentParser()
     parser.add_argument("-a", "--address", help="Dirección del punto del cual se descargará el grafo.")
     parser.add_argument("-d", "--distance", type=valid_distance,
@@ -28,12 +30,17 @@ if __name__ == "__main__":
                         help="Opción que indica que las pruebas unitarias se deben ejecutar. "
                              "both: realiza pruebas unitarias y ejecución. "
                              "test-only: solo realiza las pruebas unitarias")
+    parser.add_argument("-dr", "--draw", action="store_true",
+                        help="Bandera para mostrar el grafo utilizado en la ejecución/pruebas")
 
     args = vars(parser.parse_args())
 
     if args["test"] is not None:
         logging.info("Ejecutando pruebas unitarias...")
         exit_code = pytest.main(["."])
+
+        if args["draw"]:
+            s1_test.draw_graph()
         if exit_code != 0:
             logging.fatal("Las pruebas unitarias fallaron. Terminando proceso...")
             sys.exit(exit_code)
@@ -43,7 +50,7 @@ if __name__ == "__main__":
 
     if args["run"] == "S1":
         logging.info("Ejecutando sección 1...")
-        _args = {k: v for k, v in args.items() if k in ["address", "distance"] and v is not None}
+        _args = {k: v for k, v in args.items() if k in ["address", "distance", "draw"] and v is not None}
         s1.run(**_args)
         logging.info("Ejecución de la sección 1 terminada")
         sys.exit(0)
