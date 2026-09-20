@@ -27,6 +27,8 @@ options:
 
 ### Historial de versiones
 
+#### v0.0.5 Algoritmo genérico "FS"
+
 #### v0.0.4 Algoritmo BFS
 
 #### v0.0.3 Plantilla de la fase 2

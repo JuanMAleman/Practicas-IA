@@ -1,4 +1,4 @@
-from ..s1 import BFS, DFS, UCS
+from ..s1 import Algorithm, FS, UCS
 import networkx as nx
 import logging
 
@@ -19,7 +19,7 @@ for k, city in EDGES.items():
 
 
 def test_bfs_cdmx_oax():
-    inst = BFS(G)
+    inst = FS(G, Algorithm.BFS)
     sn, en = "MEX", "OAX"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -29,7 +29,7 @@ def test_bfs_cdmx_oax():
 
 
 def test_bfs_tol_ver():
-    inst = BFS(G)
+    inst = FS(G, Algorithm.BFS)
     sn, en = "TOL", "VER"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -39,7 +39,7 @@ def test_bfs_tol_ver():
 
 
 def test_bfs_gdl_oax():
-    inst = BFS(G)
+    inst = FS(G, Algorithm.BFS)
     sn, en = "GDL", "OAX"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -49,7 +49,7 @@ def test_bfs_gdl_oax():
 
 
 def test_bfs_ver_qro():
-    inst = BFS(G)
+    inst = FS(G, Algorithm.BFS)
     sn, en = "VER", "QRO"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -59,43 +59,43 @@ def test_bfs_ver_qro():
 
 
 def test_dfs_cdmx_oax():
-    inst = DFS(G)
+    inst = FS(G, Algorithm.DFS)
     sn, en = "MEX", "OAX"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
-    for p, d in zip(path, "MEX → PUE → VER → OAX".split(" → ")):
+    for p, d in zip(path, "MEX → CVA → OAX".split(" → ")):
         assert p == d
-    assert total_distance == 680
+    assert total_distance == 405
 
 
 def test_dfs_tol_ver():
-    inst = DFS(G)
+    inst = FS(G, Algorithm.DFS)
     sn, en = "TOL", "VER"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
-    for p, d in zip(path, "TOL → GDL → QRO → MEX → PUE → VER".split(" → ")):
+    for p, d in zip(path, "TOL → GDL → QRO → MEX → CVA → OAX → VER".split(" → ")):
         assert p == d
-    assert total_distance == 1220
+    assert total_distance == 1605
 
 
 def test_dfs_gdl_oax():
-    inst = DFS(G)
+    inst = FS(G, Algorithm.DFS)
     sn, en = "GDL", "OAX"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
-    for p, d in zip(path, "GDL → TOL → MEX → PUE → VER → OAX → CVA".split(" → ")):
+    for p, d in zip(path, "GDL → QRO → MEX → CVA → OAX".split(" → ")):
         assert p == d
-    assert total_distance == 1420
+    assert total_distance == 925
 
 
 def test_dfs_ver_qro():
-    inst = DFS(G)
+    inst = FS(G, Algorithm.DFS)
     sn, en = "VER", "QRO"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
-    for p, d in zip(path, "VER → OAX → PUE → MEX → TOL → GDL → QRO".split(" → ")):
+    for p, d in zip(path, "VER → OAX → PUE → MEX → QRO".split(" → ")):
         assert p == d
-    assert total_distance == 1540
+    assert total_distance == 1040
 
 
 def test_ucs_cdmx_oax():

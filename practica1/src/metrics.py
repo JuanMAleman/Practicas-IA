@@ -12,6 +12,7 @@ class Metrics:
         self._total_distance = 0
         self._total_edges = 0
         self._max_elements_in_structure = 0
+        self._path = []
 
         self._start_time = 0
         self._timer_started = False
@@ -53,6 +54,7 @@ class Metrics:
                 f"  Nodo inicial:     {start_node if start_node else 'sin especificar'}\n"
                 f"  Nodo final:       {end_node if end_node else 'sin especificar'}\n"
                 f"  Nodos totales:    {total_nodes if total_nodes else 'sin especificar'}\n"
+                f"  Ruta:             {' → '.join(self._path)}\n"
                 f"  Nodos expandidos: {self._explored_nodes}\n"
                 f"  Distancia total:  {self._total_distance}\n"  # Distancia del nodo inicial al final
                 f"  Total de arcos:   {self._total_edges}\n"  # Arcos = saltos del nodo inicial al final
