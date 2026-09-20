@@ -1,4 +1,5 @@
 from src.tests import s1_test, s2_test
+import src.tests as tests
 from pathlib import Path
 from src import s1, s2
 import argparse
@@ -21,7 +22,6 @@ def valid_distance(value: str) -> float:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
     # https://docs.python.org/3.14/library/argparse.html
     parser = argparse.ArgumentParser()
     parser.add_argument("-a", "--address", help="Dirección del punto del cual se descargará el grafo.")
@@ -35,17 +35,19 @@ if __name__ == "__main__":
                         help="Opción que indica que las pruebas unitarias se deben ejecutar. "
                              "both: realiza pruebas unitarias y ejecución. "
                              "test-only: solo realiza las pruebas unitarias")
-    parser.add_argument("-dr", "--draw", action="store_true",
+    parser.add_argument("-g", "--show-graph", action="store_true",
                         help="Bandera para mostrar el grafo utilizado en la ejecución/pruebas")
 
     args = vars(parser.parse_args())
+    logging.basicConfig(level=logging.INFO if args["test"] is None else logging.DEBUG)
 
     if args["test"] is not None:
         logging.info("Ejecutando pruebas unitarias...")
-        exit_code = pytest.main([str(Path("src", "tests", SECTIONS[args['run']]['tests']))])
+        exit_code = pytest.main(["-s", str(Path("src", "tests", SECTIONS[args['run']]['tests']))])
 
-        if args["draw"]:
-            eval(SECTIONS[args['run']]['tests'].replace(".py", "")).draw_graph()
+        if args["show_graph"]:
+            tests.draw_graph(eval(SECTIONS[args['run']]['tests'].replace(".py", "")).G)
+
         if exit_code != 0:
             logging.fatal("Las pruebas unitarias fallaron. Terminando proceso...")
             sys.exit(exit_code)
@@ -56,7 +58,7 @@ if __name__ == "__main__":
     for section, module_name in SECTIONS.items():
         if args["run"] == section:
             logging.info(f"Ejecutando {module_name['name']}...")
-            _args = {k: v for k, v in args.items() if k in ["address", "distance", "draw"] and v is not None}
+            _args = {k: v for k, v in args.items() if k in ["address", "distance", "show_graph"] and v is not None}
             module_name['module'].run(**_args)
             logging.info(f"Ejecución de la {module_name['name']} terminada")
             sys.exit(0)

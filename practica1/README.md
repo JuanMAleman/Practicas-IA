@@ -3,12 +3,12 @@
 ### Ejecutar
 
 ```shell
-usage: main.py [-h] [-a ADDRESS] [-d DISTANCE] [-t {test-only,both}] run
+usage: main.py [-h] [-a ADDRESS] [-d DISTANCE] [-t {test-only,both}] [-g] run
 
 positional arguments:
   run                   Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas;
-                        Sección 2 (S2): Búsqueda Informada;
-                        Sección 3 (S3): Búsqueda local [No implementado]
+                        Sección 2 (S2): Búsqueda Informada; Sección 3 (S3):
+                        Búsqueda local [No implementado]
 
 options:
   -h, --help            show this help message and exit
@@ -21,9 +21,13 @@ options:
                         Opción que indica que las pruebas unitarias se deben
                         ejecutar. both: realiza pruebas unitarias y ejecución.
                         test-only: solo realiza las pruebas unitarias
+  -g, --show-graph      Bandera para mostrar el grafo utilizado en la
+                        ejecución/pruebas
 ```
 
 ### Historial de versiones
+
+#### v0.0.4 Algoritmo BFS
 
 #### v0.0.3 Plantilla de la fase 2
 
