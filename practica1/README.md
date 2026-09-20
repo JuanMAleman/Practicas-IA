@@ -7,7 +7,7 @@ usage: main.py [-h] [-a ADDRESS] [-d DISTANCE] [-t {test-only,both}] run
 
 positional arguments:
   run                   Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas;
-                        Sección 2 (S2): Búsqueda Informada [No implementado];
+                        Sección 2 (S2): Búsqueda Informada;
                         Sección 3 (S3): Búsqueda local [No implementado]
 
 options:
@@ -24,6 +24,8 @@ options:
 ```
 
 ### Historial de versiones
+
+#### v0.0.3 Plantilla de la fase 2
 
 #### v0.0.2 Plantilla completa de la fase 1
 

@@ -1,11 +1,16 @@
-from src.tests import s1_test
-from src import s1
+from src.tests import s1_test, s2_test
+from pathlib import Path
+from src import s1, s2
 import argparse
 import logging
 import pytest
 import sys
 
-SECTIONS = [f"S{i}" for i in range(1, 2)]
+SECTION_OPTIONS = [f"S{i}" for i in range(1, 3)]
+SECTIONS = {
+    "S1": {"module": s1, "name": "sección 1", "tests": "s1_test.py"},
+    "S2": {"module": s2, "name": "sección 2", "tests": "s2_test.py"},
+}
 
 
 def valid_distance(value: str) -> float:
@@ -22,9 +27,9 @@ if __name__ == "__main__":
     parser.add_argument("-a", "--address", help="Dirección del punto del cual se descargará el grafo.")
     parser.add_argument("-d", "--distance", type=valid_distance,
                         help="Distancia a la redonda, en metros, que abarcará el grafo.")
-    parser.add_argument("run", type=lambda param: SECTIONS[SECTIONS.index(param.upper())],
+    parser.add_argument("run", type=lambda param: SECTION_OPTIONS[SECTION_OPTIONS.index(param.upper())],
                         help="Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas; "
-                             "Sección 2 (S2): Búsqueda Informada [No implementado]; "
+                             "Sección 2 (S2): Búsqueda Informada; "
                              "Sección 3 (S3): Búsqueda local [No implementado]")
     parser.add_argument("-t", "--test", choices=["test-only", "both"],
                         help="Opción que indica que las pruebas unitarias se deben ejecutar. "
@@ -37,10 +42,10 @@ if __name__ == "__main__":
 
     if args["test"] is not None:
         logging.info("Ejecutando pruebas unitarias...")
-        exit_code = pytest.main(["."])
+        exit_code = pytest.main([str(Path("src", "tests", SECTIONS[args['run']]['tests']))])
 
         if args["draw"]:
-            s1_test.draw_graph()
+            eval(SECTIONS[args['run']]['tests'].replace(".py", "")).draw_graph()
         if exit_code != 0:
             logging.fatal("Las pruebas unitarias fallaron. Terminando proceso...")
             sys.exit(exit_code)
@@ -48,11 +53,12 @@ if __name__ == "__main__":
         if args["test"] == "test-only":
             sys.exit(0)
 
-    if args["run"] == "S1":
-        logging.info("Ejecutando sección 1...")
-        _args = {k: v for k, v in args.items() if k in ["address", "distance", "draw"] and v is not None}
-        s1.run(**_args)
-        logging.info("Ejecución de la sección 1 terminada")
-        sys.exit(0)
+    for section, module_name in SECTIONS.items():
+        if args["run"] == section:
+            logging.info(f"Ejecutando {module_name['name']}...")
+            _args = {k: v for k, v in args.items() if k in ["address", "distance", "draw"] and v is not None}
+            module_name['module'].run(**_args)
+            logging.info(f"Ejecución de la {module_name['name']} terminada")
+            sys.exit(0)
 
     sys.exit(1)

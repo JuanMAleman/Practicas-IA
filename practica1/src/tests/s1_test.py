@@ -4,13 +4,13 @@ import networkx as nx
 
 
 EDGES = {
-        "MEX": (("PUE", 130), ("CVA", 85), ("TOL", 70), ("QRO", 200)),
-        "TOL": (("GDL", 350),),
-        "QRO": (("GDL", 300),),
-        "CVA": (("OAX", 320),),
-        "PUE": (("VER", 220), ("OAX", 360)),
-        "VER": (("OAX", 330),),
-    }
+    "MEX": (("PUE", 130), ("CVA", 85), ("TOL", 70), ("QRO", 200)),
+    "TOL": (("GDL", 350),),
+    "QRO": (("GDL", 300),),
+    "CVA": (("OAX", 320),),
+    "PUE": (("VER", 220), ("OAX", 360)),
+    "VER": (("OAX", 330),),
+}
 
 G = nx.Graph()
 for k, city in EDGES.items():
