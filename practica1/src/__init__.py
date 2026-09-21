@@ -3,14 +3,14 @@ from typing import Union
 import numpy as np
 
 
-def find_property(d: dict, key: str = "length") -> Union[np.float64, Number]:
+def find_property(d: dict, key: str) -> Union[np.float64, Number]:
     for k, v in d.items():
         if k == key:
             return d[k]
 
         if isinstance(v, dict):
             try:
-                length = find_property(v)
+                length = find_property(v, key)
                 return length
             except ValueError:
                 pass

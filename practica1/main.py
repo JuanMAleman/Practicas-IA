@@ -27,6 +27,8 @@ if __name__ == "__main__":
     parser.add_argument("-a", "--address", help="Dirección del punto del cual se descargará el grafo.")
     parser.add_argument("-d", "--distance", type=valid_distance,
                         help="Distancia a la redonda, en metros, que abarcará el grafo.")
+    parser.add_argument("-s", "--start-node", type=valid_distance, help="Identificador del nodo inicial.")
+    parser.add_argument("-e", "--end-node", type=valid_distance, help="Identificador del nodo final.")
     parser.add_argument("run", type=lambda param: SECTION_OPTIONS[SECTION_OPTIONS.index(param.upper())],
                         help="Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas; "
                              "Sección 2 (S2): Búsqueda Informada; "
@@ -53,12 +55,14 @@ if __name__ == "__main__":
             sys.exit(exit_code)
 
         if args["test"] == "test-only":
+            logging.info("Todas las pruebas unitarias pasaron.")
             sys.exit(0)
 
     for section, module_name in SECTIONS.items():
         if args["run"] == section:
             logging.info(f"Ejecutando {module_name['name']}...")
-            _args = {k: v for k, v in args.items() if k in ["address", "distance", "show_graph"] and v is not None}
+            params = ["address", "distance", "show_graph", "start_node", "end_node"]
+            _args = {k: v for k, v in args.items() if k in params and v is not None and v}
             module_name['module'].run(**_args)
             logging.info(f"Ejecución de la {module_name['name']} terminada")
             sys.exit(0)

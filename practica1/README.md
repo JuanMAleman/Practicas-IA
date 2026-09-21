@@ -27,6 +27,9 @@ options:
 
 ### Historial de versiones
 
+#### v0.0.6 Algoritmo genérico "UFSA": Uninformed Search Algorithms
+- Agregados parámetros de nodo de inicio y nodo final
+
 #### v0.0.5 Algoritmo genérico "FS"
 
 #### v0.0.4 Algoritmo BFS

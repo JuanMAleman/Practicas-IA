@@ -14,22 +14,22 @@ class Metrics:
         self._max_elements_in_structure = 0
         self._path = []
 
-        self._start_time = 0
-        self._timer_started = False
+        self._start_time = -1
+        self._end_time = -1
 
-    def start_timer(self):
+    def _start_timer(self):
         # https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-python-programs-execution
         self._start_time = time.time()
-        self._timer_started = True
+
+    def _end_timer(self):
+        self._end_time = time.time()
 
     @property
     def elapsed_time(self) -> str:  # Tiempo de ejecución
-        if not self._timer_started:
-            return "N/A"
+        if self._end_time == -1 or self._start_time == -1:
+            return "-1"
 
-        self._timer_started = False
-
-        t = time.time() - self._start_time
+        t = self._end_time - self._start_time
         if t > 0.1:
             return f"{t:.4f} s"
 
@@ -46,15 +46,15 @@ class Metrics:
         self._total_distance = 0
         self._total_edges = 0
         self._max_elements_in_structure = 0
-        self._start_time = 0
-        self._timer_started = False
+        self._start_time = -1
+        self._end_time = -1
 
     def report(self, start_node: str = "", end_node: str = "", total_nodes: int = 0) -> str:
         return (f"Reporte de {self._algorithm}\n"
                 f"  Nodo inicial:     {start_node if start_node else 'sin especificar'}\n"
                 f"  Nodo final:       {end_node if end_node else 'sin especificar'}\n"
                 f"  Nodos totales:    {total_nodes if total_nodes else 'sin especificar'}\n"
-                f"  Ruta:             {' → '.join(self._path)}\n"
+                f"  Ruta:             {' → '.join([str(p) for p in self._path])}\n"
                 f"  Nodos expandidos: {self._explored_nodes}\n"
                 f"  Distancia total:  {self._total_distance}\n"  # Distancia del nodo inicial al final
                 f"  Total de arcos:   {self._total_edges}\n"  # Arcos = saltos del nodo inicial al final

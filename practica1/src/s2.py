@@ -1,4 +1,4 @@
-from .map_download import download
+from .map_download import fetch_graph
 from .metrics import Metrics
 from typing import Callable
 from networkx import Graph
@@ -22,7 +22,7 @@ def run(**kwargs):
     if "draw" in kwargs:
         draw = kwargs.pop("draw")
 
-    g = download(*kwargs)
+    g = fetch_graph(*kwargs)
     ...
 
     if draw:

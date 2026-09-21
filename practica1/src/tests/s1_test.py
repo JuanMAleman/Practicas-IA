@@ -1,4 +1,4 @@
-from ..s1 import Algorithm, FS, UCS
+from ..s1 import Algorithm, UFSA
 import networkx as nx
 import logging
 
@@ -19,7 +19,7 @@ for k, city in EDGES.items():
 
 
 def test_bfs_cdmx_oax():
-    inst = FS(G, Algorithm.BFS)
+    inst = UFSA(G, Algorithm.BFS)
     sn, en = "MEX", "OAX"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -29,7 +29,7 @@ def test_bfs_cdmx_oax():
 
 
 def test_bfs_tol_ver():
-    inst = FS(G, Algorithm.BFS)
+    inst = UFSA(G, Algorithm.BFS)
     sn, en = "TOL", "VER"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -39,7 +39,7 @@ def test_bfs_tol_ver():
 
 
 def test_bfs_gdl_oax():
-    inst = FS(G, Algorithm.BFS)
+    inst = UFSA(G, Algorithm.BFS)
     sn, en = "GDL", "OAX"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -49,7 +49,7 @@ def test_bfs_gdl_oax():
 
 
 def test_bfs_ver_qro():
-    inst = FS(G, Algorithm.BFS)
+    inst = UFSA(G, Algorithm.BFS)
     sn, en = "VER", "QRO"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -59,7 +59,7 @@ def test_bfs_ver_qro():
 
 
 def test_dfs_cdmx_oax():
-    inst = FS(G, Algorithm.DFS)
+    inst = UFSA(G, Algorithm.DFS)
     sn, en = "MEX", "OAX"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -69,7 +69,7 @@ def test_dfs_cdmx_oax():
 
 
 def test_dfs_tol_ver():
-    inst = FS(G, Algorithm.DFS)
+    inst = UFSA(G, Algorithm.DFS)
     sn, en = "TOL", "VER"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -79,7 +79,7 @@ def test_dfs_tol_ver():
 
 
 def test_dfs_gdl_oax():
-    inst = FS(G, Algorithm.DFS)
+    inst = UFSA(G, Algorithm.DFS)
     sn, en = "GDL", "OAX"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -89,7 +89,7 @@ def test_dfs_gdl_oax():
 
 
 def test_dfs_ver_qro():
-    inst = FS(G, Algorithm.DFS)
+    inst = UFSA(G, Algorithm.DFS)
     sn, en = "VER", "QRO"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -99,7 +99,7 @@ def test_dfs_ver_qro():
 
 
 def test_ucs_cdmx_oax():
-    inst = UCS(G)
+    inst = UFSA(G, Algorithm.UCS)
     sn, en = "MEX", "OAX"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -109,7 +109,7 @@ def test_ucs_cdmx_oax():
 
 
 def test_ucs_tol_ver():
-    inst = UCS(G)
+    inst = UFSA(G, Algorithm.UCS)
     sn, en = "TOL", "VER"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -119,7 +119,7 @@ def test_ucs_tol_ver():
 
 
 def test_ucs_gdl_oax():
-    inst = UCS(G)
+    inst = UFSA(G, Algorithm.UCS)
     sn, en = "GDL", "OAX"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
@@ -129,7 +129,7 @@ def test_ucs_gdl_oax():
 
 
 def test_ucs_ver_qro():
-    inst = UCS(G)
+    inst = UFSA(G, Algorithm.UCS)
     sn, en = "VER", "QRO"
     path, total_distance = inst.perform_search(sn, en)
     logging.debug(inst.report(sn, en, len(G)))
