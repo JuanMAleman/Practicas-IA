@@ -3,7 +3,9 @@
 ### Ejecutar
 
 ```shell
-usage: main.py [-h] [-a ADDRESS] [-d DISTANCE] [-t {test-only,both}] [-g] run
+usage: main.py [-h] [-a ADDRESS] [-d DISTANCE] [-s START_NODE] [-e END_NODE]
+               [-t {test-only,both}] [-g]
+               run
 
 positional arguments:
   run                   Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas;
@@ -17,6 +19,10 @@ options:
   -d, --distance DISTANCE
                         Distancia a la redonda, en metros, que abarcará el
                         grafo.
+  -s, --start-node START_NODE
+                        Identificador del nodo inicial.
+  -e, --end-node END_NODE
+                        Identificador del nodo final.
   -t, --test {test-only,both}
                         Opción que indica que las pruebas unitarias se deben
                         ejecutar. both: realiza pruebas unitarias y ejecución.
@@ -26,6 +32,8 @@ options:
 ```
 
 ### Historial de versiones
+
+#### v0.0.7 Ajustes de ejecución y avance de reporte
 
 #### v0.0.6 Algoritmo genérico "UFSA": Uninformed Search Algorithms
 - Agregados parámetros de nodo de inicio y nodo final

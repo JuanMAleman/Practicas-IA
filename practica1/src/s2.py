@@ -3,7 +3,6 @@ from .metrics import Metrics
 from typing import Callable
 from networkx import Graph
 from osmnx import plot
-import heapq
 
 
 class AStar(Metrics):
@@ -18,12 +17,12 @@ class AStar(Metrics):
 
 
 def run(**kwargs):
-    draw = False
-    if "draw" in kwargs:
-        draw = kwargs.pop("draw")
+    show_graph = False
+    if "show_graph" in kwargs:
+        show_graph = kwargs.pop("show_graph")
 
     g = fetch_graph(*kwargs)
     ...
 
-    if draw:
+    if show_graph:
         plot.plot_graph(g)

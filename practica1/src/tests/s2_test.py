@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 from ..s2 import AStar
 import networkx as nx
 

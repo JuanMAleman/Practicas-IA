@@ -27,8 +27,8 @@ if __name__ == "__main__":
     parser.add_argument("-a", "--address", help="Dirección del punto del cual se descargará el grafo.")
     parser.add_argument("-d", "--distance", type=valid_distance,
                         help="Distancia a la redonda, en metros, que abarcará el grafo.")
-    parser.add_argument("-s", "--start-node", type=valid_distance, help="Identificador del nodo inicial.")
-    parser.add_argument("-e", "--end-node", type=valid_distance, help="Identificador del nodo final.")
+    parser.add_argument("-s", "--start-node", help="Identificador del nodo inicial.")
+    parser.add_argument("-e", "--end-node", help="Identificador del nodo final.")
     parser.add_argument("run", type=lambda param: SECTION_OPTIONS[SECTION_OPTIONS.index(param.upper())],
                         help="Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas; "
                              "Sección 2 (S2): Búsqueda Informada; "
