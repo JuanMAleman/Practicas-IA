@@ -28,7 +28,7 @@ class UFSA(Metrics):  # "Uninformed Search Algorithms"
         self._data_structure: Union[Queue, LifoQueue, list, None] = None
         self.frontier_snapshots = []
 
-    def _init_data_structure(self, start_node: str):
+    def _init_data_structure(self, start_node: Union[int, str]):
         if self._chosen_algorithm == Algorithm.BFS:
             self._data_structure = Queue()
         elif self._chosen_algorithm == Algorithm.DFS:

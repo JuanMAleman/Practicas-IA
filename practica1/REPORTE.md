@@ -247,3 +247,30 @@ de ser completos.
 
 Producen el mismo resultado cuando el camino de menos arcos (BFS)
 es el mismo que el de menor costo (UCS).
+
+
+### Referencias
+
+Uso de heapq y queue
+- https://docs.python.org/3/library/heapq.html#basic-examples
+- https://docs.python.org/3.14/library/queue.html
+
+Uso de osmnx
+- https://osmnx.readthedocs.io/en/stable/user-reference.html
+
+Uso de argparse
+- https://docs.python.org/3.14/library/argparse.html
+
+Algoritmos DFS, BFS y UCS
+- Programa web proporcionado: `busqueda_no_informada.html`
+
+Otra documentación consultada
+- https://tedboy.github.io/networkx/reference/graph_types.multidigraph.html
+- https://www.openstreetmap.org/node/11359618606#map=19/19.504152/-99.147103
+- https://networkx.org/documentation/stable/auto_examples/drawing/plot_weighted_graph.html
+- https://matplotlib.org/stable/gallery/shapes_and_collections/fancybox_demo.html
+- https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-python-programs-execution
+- https://github.com/gboeing/osmnx-examples
+- https://www.geeksforgeeks.org/python/stack-in-python/
+- https://stackoverflow.com/questions/34764535/why-cant-matplotlib-plot-in-a-different-thread
+- https://docs.python.org/3.14/library/multiprocessing.html#multiprocessing.Process

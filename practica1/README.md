@@ -36,6 +36,8 @@ options:
 
 ### Historial de versiones
 
+#### v0.0.8 Plantilla de fase 3
+
 #### v0.0.7_1 Reporte de la sección 1
 
 #### v0.0.7 Ajustes de ejecución y avance de reporte

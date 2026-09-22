@@ -2,11 +2,11 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 
-def draw_graph(g: nx.Graph):
+def draw_graph(g: nx.Graph, seed: int):
     # https://networkx.org/documentation/stable/auto_examples/drawing/plot_weighted_graph.html
     # https://matplotlib.org/stable/gallery/shapes_and_collections/fancybox_demo.html
 
-    pos = nx.spring_layout(g, seed=5)
+    pos = nx.spring_layout(g, seed=seed)
     nx.draw_networkx_nodes(g, pos, node_size=2500, node_color="#E3E8EF", linewidths=2, edgecolors="#97A2B6")
 
     nx.draw_networkx_edges(g, pos, width=3, edge_color="#CDD5E0")
