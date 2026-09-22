@@ -24,11 +24,13 @@ def valid_distance(value: str) -> float:
 if __name__ == "__main__":
     # https://docs.python.org/3.14/library/argparse.html
     parser = argparse.ArgumentParser()
-    parser.add_argument("-a", "--address", help="Dirección del punto del cual se descargará el grafo.")
+    parser.add_argument("-a", "--address", help="Dirección del punto del cual se descargará el grafo. "
+                                                "(por defecto = 'Escuela Superior de Cómputo')")
     parser.add_argument("-d", "--distance", type=valid_distance,
-                        help="Distancia a la redonda, en metros, que abarcará el grafo.")
-    parser.add_argument("-s", "--start-node", help="Identificador del nodo inicial.")
-    parser.add_argument("-e", "--end-node", help="Identificador del nodo final.")
+                        help="Distancia a la redonda, en metros, que abarcará el grafo. (por defecto = 1000)")
+    parser.add_argument("-s", "--start-node", help="Identificador del nodo inicial. "
+                                                   "(por defecto = aleatorio)")
+    parser.add_argument("-e", "--end-node", help="Identificador del nodo final. (por defecto = aleatorio)")
     parser.add_argument("run", type=lambda param: SECTION_OPTIONS[SECTION_OPTIONS.index(param.upper())],
                         help="Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas; "
                              "Sección 2 (S2): Búsqueda Informada; "
