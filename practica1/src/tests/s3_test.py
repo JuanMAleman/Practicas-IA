@@ -1,4 +1,4 @@
-from ..s3 import GeneticAlgorithm
+from ..s3 import GeneticAlgorithm, calculate_distance, SimulatedAnnealing
 import networkx as nx
 import logging
 
@@ -24,9 +24,8 @@ def test_genetic_algorithm_init_population():
     assert len(inst._population) == 50
 
 
-def test_genetic_algorithm_calculate_distance():
-    inst = GeneticAlgorithm(G, 50, 50, 15)
-    assert inst._calculate_distance("D E C F A B D".split(" ")) == 147
+def test_calculate_distance():
+    assert calculate_distance(G, "D E C F A B D".split(" ")) == 147
 
 
 def test_genetic_algorithm_mutate():
@@ -45,3 +44,15 @@ def test_genetic_algorithm():
     # B → A → D → C → E → F
     # F → E → C → D → A → B
     assert total_distance == 106
+
+
+def test_simulated_annealing():
+    inst = SimulatedAnnealing(G, 10000, 10, 0.9999)
+    path, total_distance = inst.find_optima()
+    logging.info(inst.report(total_nodes=len(G)))
+    if total_distance != 106:
+        logging.warning("La ruta seleccionada no es óptima")
+    else:
+        logging.info("La ruta seleccionada es óptima")
+
+    assert total_distance < 170  # Recocido simulado nunca parece llegar a la mejor como el GA

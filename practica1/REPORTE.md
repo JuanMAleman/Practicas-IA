@@ -63,11 +63,12 @@ diferentes clases y funciones,
 - `plot_graph(...)`: función que gráfica el grafo, utiliza diferentes 
   colores para distinguir entre el nodo inicial (verde), 
   nodo final (azul) y los nodos de frontera (naranja).
-- `run(**kwargs)`: punto de entrada que orquesta la ejecución de los
-  algoritmos. La función anidada `plot_snapshots(ufsa: UFSA)`, 
-  utiliza `multiprocessing` para mostrar los tres momentos de la 
-  frontera al mismo tiempo en diferentes ventanas, `matplotlib` no
+- La función `plot_snapshots(ufsa: UFSA)`, utiliza 
+  `multiprocessing` para mostrar los tres momentos de la frontera 
+  al mismo tiempo en diferentes ventanas, `matplotlib` no
   es _thread-safe_, por lo que `threading` no es compatible.
+- `run(**kwargs)`: punto de entrada que orquesta la ejecución de los
+  algoritmos.
 
 ## Pruebas con grafos con `osmnx`
 
@@ -250,6 +251,151 @@ Producen el mismo resultado cuando el camino de menos arcos (BFS)
 es el mismo que el de menor costo (UCS).
 
 
+## Sección 3: Búsqueda local
+
+En esta sección se implementaron los algoritmos `GeneticAlgorithm`
+y `SimulatedAnnealing`, estos algoritmos buscan encontrar la ruta
+para recorrer todos los nodos de un grafo con el minimo coste, 
+en este caso, distancia.
+
+### s3.py
+
+Archivo principal de la sección 3. En esta sección se encuentran 
+diferentes clases y funciones,
+
+- `calculate_distance(...)`: función objetivo que se busca optimizar
+- `GeneticAlgorithm(Metrics)`: algoritmo genético que simula el 
+  proceso reproductivo de los seres vivos para aproximar soluciones
+  óptimas. Implementa crossover y mutación para crear nuevas rutas.
+- `SimulatedAnnealing(Metrics)`: algoritmo de recocido simulado que
+  imita la forma en la que un material se enfría para llegar a una
+  temperatura estable, en este caso para aproximar soluciones 
+  óptimas. Ocasionalmente, acepta soluciones subóptimas para
+  intentar escapar de óptimos locales.
+- `build_graph(**kwargs)`: función que lee un archivo de texto con
+  una matriz triangular de tamaño 15x15, que posteriormente 
+  convierte en una matriz de distancias cuadrada y que finalmente
+  convierte en un grafo. De esta matriz se obtienen submatrices 
+  de acuerdo con el argumento de `--nodos`, desde 4 hasta 15
+- `run(**kwargs)`: punto de entrada que orquesta la ejecución de los
+  algoritmos.
+
+### Hardware y software
+
+| Nombre  | Valor                  |
+|---------|------------------------|
+| CPU     | Apple M4 de 10 núcleos |
+| Memoria | 16 GB LPDDR5           |
+| OS      | macOS 15.7.4           |
+| Python  | v3.14.6:c63aec69bd5    |
+
+
+### Ejecución de los algoritmos con valores por defecto
+
+La ejecución de los algoritmos se hizo con el comando,
+
+```
+python3 main.py s3 -g
+```
+
+Que utiliza los parámetros por defecto. Con estas opciones, 
+el algoritmo genético siempre da mejores resultados, aunque con
+un costo en tiempo más elevado que el SA.
+
+<pre>
+Reporte de Algoritmo genético
+  Nodos totales:    10
+  Ruta:             J → D → I → E → F → C → B → G → H → A
+  Distancia total:  210
+  Total de arcos:   10
+    Tiempo de
+    ejecución:      107.4650 ms
+    Tamaño de
+    población:       100
+  Generaciones:      50
+   Cantidad de
+     mejores
+   seleccionados:   5
+  Tasa de mutación:  0.5
+</pre>
+
+<pre>
+Reporte de Recocido simulado
+  Nodos totales:    10
+  Ruta:             A → I → J → C → G → E → B → H → F → D
+  Distancia total:  609
+  Total de arcos:   10
+    Tiempo de
+    ejecución:      354.0516 us
+    Temperatura
+      inicial:      10000
+    Temperatura
+      minima:       10
+      Tasa de
+    enfriamiento:   0.8
+</pre>
+
+| ![GA](img/GA_1.png) | ![GA](img/SA_1.png) |
+|---------------------|---------------------|
+
+
+### Ejecución de los algoritmos con modificaciones
+
+Realizando pruebas, aumentar demasiado los parámetros para el GA, 
+no suele resultar en mejores rutas, utilizar un valor de mutación
+preciso, que cambie lo suficiente, pero no demasiado, suele ayudar.
+
+Para el recocido simulado, aumentar más los parámetros y dejar que
+realice muchas iteraciones, bajando la tasa de enfriamiento, 
+resulta en mejores rutas aunque a un tiempo peor.
+
+En esta siguiente prueba, se cambiaron los argumentos para ambos
+algoritmos y, de forma empirica, se encontró que el SA suele 
+generar soluciones en el rango de GA + 60 puntos en distancia 
+total, con un costo de más iteraciones y con un aumento de 
+alrededor de 200 a 300 ms en tiempo.
+
+```shell
+python3 main.py s3 -g -gs 300 -p 100 -b 20 -m 0.6 -c 0.9999
+```
+
+<pre>
+Reporte de Algoritmo genético
+  Nodos totales:    10
+  Ruta:             J → I → D → F → E → B → C → A → H → G
+  Distancia total:  189
+  Total de arcos:   10
+    Tiempo de
+    ejecución:      476.5289 ms
+    Tamaño de
+    población:       100
+  Generaciones:      300
+   Cantidad de
+     mejores
+   seleccionados:   20
+  Tasa de mutación:  0.6
+</pre>
+
+<pre>
+Reporte de Recocido simulado
+  Nodos totales:    10
+  Ruta:             G → B → D → J → I → E → F → C → A → H
+  Distancia total:  207
+  Total de arcos:   10
+    Tiempo de
+    ejecución:      713.4700 ms
+    Temperatura
+      inicial:      10000
+    Temperatura
+      minima:       10
+      Tasa de
+    enfriamiento:   0.9999
+</pre>
+
+| ![GA](img/GA_2.png) | ![GA](img/SA_2.png) |
+|---------------------|---------------------|
+
+
 ## Referencias
 
 Uso de heapq y queue
@@ -264,6 +410,12 @@ Uso de argparse
 
 Algoritmos DFS, BFS y UCS
 - Programa web proporcionado: `busqueda_no_informada.html`
+
+Algoritmo genético
+- https://antonio-richaud.com/biblioteca/archivo/Algoritmos-geneticos/algoritmos-geneticos.pdf
+
+Algoritmo de recocio simulado
+- https://optimization.cbe.cornell.edu/index.php?title=Simulated_annealing
 
 Otra documentación consultada
 - https://tedboy.github.io/networkx/reference/graph_types.multidigraph.html

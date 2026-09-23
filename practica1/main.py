@@ -53,6 +53,13 @@ if __name__ == "__main__":
         parser.add_argument("-m", "--mutation-rate", type=lambda v: float(v), default=0.5,
                             help="Probabilidad de mutación, rango de [0, 1]. (por defecto 0.5)")
 
+        parser.add_argument("-i", "--initial-temperature", type=lambda v: float(v), default=10000,
+                            help="Temperatura inicial. (por defecto 10000)")
+        parser.add_argument("-mt", "--minimum-temperature", type=lambda v: float(v), default=10,
+                            help="Temperatura minima. (por defecto 10)")
+        parser.add_argument("-c", "--cooling-rate", type=lambda v: float(v), default=0.8,
+                            help="Tasa de enfriamiento. (por defecto 0.8)")
+
     parser.add_argument("run", type=lambda param: SECTION_OPTIONS[SECTION_OPTIONS.index(param.upper())],
                         help="Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas; "
                              "Sección 2 (S2): Búsqueda Informada; "
@@ -90,6 +97,7 @@ if __name__ == "__main__":
             params = ["address", "distance", "show_graph", "start_node", "end_node"]
             if args["run"] == "S3":
                 params += ["nodes", "population_size", "generations", "best_sample_size", "mutation_rate"]
+                params += ["initial_temperature", "minimum_temperature", "cooling_rate"]
 
             _args = {k: v for k, v in args.items() if k in params and v is not None and v}
             module_name['module'].run(**_args)

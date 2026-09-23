@@ -4,9 +4,25 @@ from .metrics import Metrics
 from . import find_property
 from networkx import Graph
 from typing import Union
+import multiprocessing
 import networkx as nx
 import logging
 import random
+import math
+
+
+def calculate_distance(g: Graph, path: list) -> float:
+    distance = 0
+    adjacent_nodes = None
+    for p in path:
+        if adjacent_nodes is None:
+            adjacent_nodes = g[p]
+            continue
+
+        distance += find_property(adjacent_nodes[p], "length")
+        adjacent_nodes = g[p]
+
+    return distance
 
 
 class GeneticAlgorithm(Metrics):
@@ -17,12 +33,12 @@ class GeneticAlgorithm(Metrics):
 
         if population_size < 1:
             raise ValueError("Tamaño de población inicial menor que uno")
-        if best_sample_size < 1:
-            raise ValueError("Tamaño de muestra de los mejores individuos menor que uno")
+        if best_sample_size < 2:
+            raise ValueError("Tamaño de muestra de los mejores individuos menor que dos")
         if population_size < best_sample_size:
             raise ValueError("Tamaño de muestra de los mejores individuos no puede ser "
                              "mayor que el tamaño de población")
-        if mutation_rate != -1 and 0 <= mutation_rate >= 1:
+        if 0 <= mutation_rate >= 1:
             raise ValueError("mutation_rate fuera del rango (0, 1)")
 
         self._g = g
@@ -39,20 +55,7 @@ class GeneticAlgorithm(Metrics):
             random.shuffle(path)
             # Los individuos se encuentran en la lista 'self._population' como tuplas con la distancia de la ruta como
             # primer valor
-            self._population.append((self._calculate_distance(path), path))
-
-    def _calculate_distance(self, path: list) -> float:
-        distance = 0
-        adjacent_nodes = None
-        for p in path:
-            if adjacent_nodes is None:
-                adjacent_nodes = self._g[p]
-                continue
-
-            distance += find_property(adjacent_nodes[p], "length")
-            adjacent_nodes = self._g[p]
-
-        return distance
+            self._population.append((calculate_distance(self._g, path), path))
 
     def _mutate(self, path: list) -> list:
         path_len = len(path)
@@ -91,7 +94,7 @@ class GeneticAlgorithm(Metrics):
 
             child = self._crossover(parent_a[1], parent_b[1])
             child = self._mutate(child)
-            child = (self._calculate_distance(child), child)
+            child = (calculate_distance(self._g, child), child)
             offspring.append(child)
 
         self._population = best + offspring
@@ -118,10 +121,75 @@ class GeneticAlgorithm(Metrics):
         report += (f"\n    Tamaño de\n"
                    f"    población:       {self._population_size}\n"
                    f"  Generaciones:      {self._generations}\n"
-                   f"    Cantidad de\n"
-                   f"       mejores\n"
-                   f"    seleccionados:   {self._best_sample_size}\n"
+                   f"   Cantidad de\n"
+                   f"     mejores\n"
+                   f"   seleccionados:   {self._best_sample_size}\n"
                    f"  Tasa de mutación:  {self._mutation_rate}")
+        return report
+
+
+# https://optimization.cbe.cornell.edu/index.php?title=Simulated_annealing
+class SimulatedAnnealing(Metrics):
+    def __init__(
+        self, g: Graph, initial_temperature: float = 1000, minimum_temperature: float = 50, cooling_rate: float = 0.7
+    ):
+        super().__init__("Recocido simulado")
+        if initial_temperature < 100:
+            raise ValueError("Temperatura inicial menor que 100")
+        if minimum_temperature < 10:
+            raise ValueError("Temperatura minima menor que 10")
+        if 0 <= cooling_rate >= 1:
+            raise ValueError("cooling_rate fuera del rango (0, 1)")
+
+        self._g = g
+        self._initial_temperature = initial_temperature
+        self._alpha = cooling_rate
+        self._minimum_temperature = minimum_temperature
+        self._temperature = 0
+        self._bests_history = []
+
+    @property
+    def bests_history(self):
+        return self._bests_history
+
+    @staticmethod
+    def _generate_neighbor(current_solution: list) -> list:
+        new_solution = current_solution.copy()
+        i, s = random.sample(range(len(new_solution)), 2)
+        new_solution[i], new_solution[s] = new_solution[s], new_solution[i]
+
+        return new_solution
+
+    def find_optima(self) -> tuple[list[str], Union[str, float]]:
+        self._start_timer()
+        current_solution = list(self._g.nodes.keys())
+        self._temperature = self._initial_temperature
+
+        while self._temperature > self._minimum_temperature:
+            new_solution = self._generate_neighbor(current_solution)
+
+            current_solution_distance = calculate_distance(self._g, current_solution)
+            delta_e = calculate_distance(self._g, new_solution) - current_solution_distance
+            if delta_e < 0 or random.random() < math.exp(-delta_e / self._temperature):
+                current_solution = new_solution
+
+            self._bests_history.append(current_solution_distance)
+            self._temperature *= self._alpha
+
+        self._path = current_solution
+        self._total_distance = calculate_distance(self._g, current_solution)
+        self._total_edges = len(self._path)
+        self._end_timer()
+        return current_solution, self._total_distance
+
+    def report(self, total_nodes: int = 0) -> str:
+        report = super().report(total_nodes)
+        report += (f"\n    Temperatura\n"
+                   f"      inicial:      {self._initial_temperature}\n"
+                   f"    Temperatura\n"
+                   f"      minima:       {self._minimum_temperature}\n"
+                   f"      Tasa de\n"
+                   f"    enfriamiento:   {self._alpha}")
         return report
 
 
@@ -159,6 +227,16 @@ def build_graph(**kwargs) -> tuple:
     return g, graph
 
 
+def graph_genetic(fittest_history):
+    plt.plot(fittest_history, marker="o", color="#0000FF")
+    plt.title("Algoritmo genético: evolución de la mejor distancia por generación")
+    plt.xlabel("Generación (iteración)")
+    plt.ylabel("Distancia")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+
 def run(**kwargs):
     g, graph = build_graph(**kwargs)
 
@@ -168,12 +246,20 @@ def run(**kwargs):
     genetic_algorithm.find_optima()
     print(genetic_algorithm.report(total_nodes=len(g)))
 
+    simulated_annealing = SimulatedAnnealing(
+        g, kwargs["initial_temperature"], kwargs["minimum_temperature"], kwargs["cooling_rate"]
+    )
+    simulated_annealing.find_optima()
+    print(simulated_annealing.report(total_nodes=len(g)))
+
     if not graph:
         return
 
-    plt.plot(genetic_algorithm.fittest_history, marker="o", color="#0000FF")
-    plt.title("Evolución de la mejor distancia por generación")
-    plt.xlabel("Generación")
+    multiprocessing.Process(target=graph_genetic, args=(genetic_algorithm.fittest_history,)).start()
+
+    plt.plot(simulated_annealing.bests_history, marker="o", color="#0000FF")
+    plt.title("Recocido simulado: mejor distancia por iteración")
+    plt.xlabel("Iteración")
     plt.ylabel("Distancia")
     plt.grid(True)
     plt.tight_layout()

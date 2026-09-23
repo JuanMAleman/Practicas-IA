@@ -5,8 +5,9 @@
 ```
 usage: main.py [-h] [-a ADDRESS] [-d DISTANCE] [-s START_NODE] [-e END_NODE]
                [-n NODES] [-p POPULATION_SIZE] [-gs GENERATIONS]
-               [-b BEST_SAMPLE_SIZE] [-m MUTATION_RATE] [-t {test-only,both}]
-               [-g]
+               [-b BEST_SAMPLE_SIZE] [-m MUTATION_RATE]
+               [-i INITIAL_TEMPERATURE] [-mt MINIMUM_TEMPERATURE]
+               [-c COOLING_RATE] [-t {test-only,both}] [-g]
                run
 
 positional arguments:
@@ -32,16 +33,22 @@ options:
                         3. (por defecto 10)
   -p, --population-size POPULATION_SIZE
                         Cantidad de poblaciones para algoritmo genético. (por
-                        defecto 50)
+                        defecto 100)
   -gs, --generations GENERATIONS
                         Cantidad de generaciones para algoritmo genético. (por
                         defecto 50)
   -b, --best-sample-size BEST_SAMPLE_SIZE
                         Cantidad de individuos a seleccionar como mejores para
-                        algoritmo genético. (por defecto 50)
+                        algoritmo genético. (por defecto 5)
   -m, --mutation-rate MUTATION_RATE
                         Probabilidad de mutación, rango de [0, 1]. (por
                         defecto 0.5)
+  -i, --initial-temperature INITIAL_TEMPERATURE
+                        Temperatura inicial. (por defecto 10000)
+  -mt, --minimum-temperature MINIMUM_TEMPERATURE
+                        Temperatura minima. (por defecto 10)
+  -c, --cooling-rate COOLING_RATE
+                        Tasa de enfriamiento. (por defecto 0.8)
   -t, --test {test-only,both}
                         Opción que indica que las pruebas unitarias se deben
                         ejecutar. both: realiza pruebas unitarias y ejecución.
@@ -51,17 +58,20 @@ options:
 ```
 
 **Nota**: Las opciones `--population-size`, `--generations`, 
-`--best-sample-size` y `--mutation-rate` solo son validas si se 
+`--best-sample-size`, `--mutation-rate`, `--initial-temperature`,
+`--minimum-temperature`, y `--cooling-rate` solo son válidas si se 
 ejecuta la sección 3. Para mostrar el menu de ayuda completo debe
 utilizarse el comando,
 
 ```shell
 # De omitirse 's3', se mostrará el menu sin las opciones 
-# para el algoritmo genético
+# para el algoritmo genético y recocido simulado
 python3 main.py s3 -h
 ```
 
 ### Historial de versiones
+
+#### v0.1.1 Implementación de `SimulatedAnnealing` y reporte de la sección 3
 
 #### v0.1.0 Implementación de `GeneticAlgorithm`
 - Refactorización de `Metrics`

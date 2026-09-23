@@ -57,12 +57,12 @@ class UFSA(Metrics):  # "Uninformed Search Algorithms"
     def _data_structure_get(self) -> tuple:
         if isinstance(self._data_structure, list):
             return heapq.heappop(self._data_structure)
-        return self._data_structure.get(timeout=self._timeout)
+        return self._data_structure.get()
 
     def _data_structure_put(self, data: tuple[float, float, str, list]):
         if isinstance(self._data_structure, list):
             return heapq.heappush(self._data_structure, data)
-        return self._data_structure.put(data, timeout=self._timeout)
+        return self._data_structure.put(data)
 
     def frontier(self) -> list[Union[int, str]]:
         if isinstance(self._data_structure, list):
