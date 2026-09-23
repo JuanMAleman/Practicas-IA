@@ -1,6 +1,6 @@
 # Reporte de práctica
 
-### Estructura del proyecto
+## Estructura del proyecto
 
 El proyecto tiene diferentes directorios y archivos,
 - `src`: Contiene los archivos de las diferentes secciones
@@ -9,13 +9,7 @@ El proyecto tiene diferentes directorios y archivos,
   en clase con los arrojados por el algoritmo implementado 
 - `main.py`: Punto de entrada, más información en [README.md](README.md)
 
-### Sección 1: Búsqueda a ciegas
-
-En esta sección se implementó un algoritmo "genérico" que 
-simplemente cambia la estructura de datos en función del 
-algoritmo que se quiere ejecutar.
-
-### Pruebas unitarias
+## Pruebas unitarias
 
 Las pruebas unitarias prueban la funcionalidad del método 
 `perform_search` contrastando los resultados del programa en 
@@ -31,25 +25,32 @@ de forma ordenada, por lo que al momento de ejecutar el algoritmo
 los nodos adjacentes se exploran de esta forma, esto no 
 necesariamente sucede en el programa de `busqueda_no_informada.html`.
 
-### Contenidos y algunas decisiones de diseño
+## Contenidos y algunas decisiones de diseño
 
-#### main.py
+### main.py
 
 En `main.py` se utiliza un `parser` de argumentos CLI con el fin de 
 facilitar la ejecución de las diferentes secciones y si se quieren
 cambiar parámetros de ejecución o realizar las pruebas unitarias.
 
-#### metrics.py
+### metrics.py
 
 `metrics.py` contiene todos los parámetros necesarios para dar un
 reporte de ejecución.
 
-#### map_download.py
+### map_download.py
 
 Pequeño archivo con una única tarea: traer grafo de algún sitio,
 que puede ser especificado por CLI, utilizando el módulo de `osmnx`.
 
-#### s1.py
+
+## Sección 1: Búsqueda a ciegas
+
+En esta sección se implementó un algoritmo "genérico" que 
+simplemente cambia la estructura de datos en función del 
+algoritmo que se quiere ejecutar.
+
+### s1.py
 
 Archivo principal de la sección 1. En esta sección se encuentran 
 diferentes clases y funciones,
@@ -68,7 +69,7 @@ diferentes clases y funciones,
   frontera al mismo tiempo en diferentes ventanas, `matplotlib` no
   es _thread-safe_, por lo que `threading` no es compatible.
 
-### Pruebas con grafos con `osmnx`
+## Pruebas con grafos con `osmnx`
 
 Las pruebas se ejecutaron con la Escuela Superior de Cómputo como
 epicentro, y con todos los nodos a una distancia de 2 km, utilizando
@@ -78,7 +79,7 @@ el siguiente comando,
 python3 main.py s1 --distance 2000 --graph
 ```
 
-#### Hardware y software
+### Hardware y software
 
 | Nombre  | Valor                  |
 |---------|------------------------|
@@ -88,7 +89,7 @@ python3 main.py s1 --distance 2000 --graph
 | Python  | v3.14.6:c63aec69bd5    |
 
 
-#### Ejecución de BFS
+### Ejecución de BFS
 
 <pre>
 Reporte de BFS
@@ -110,7 +111,7 @@ Reporte de BFS
 | ![F1](img/BFS_F1.png) | ![F2](img/BFS_F2.png) | ![F3](img/BFS_F3.png) |
 
 
-#### Ejecución de DFS
+### Ejecución de DFS
 
 <pre>
 Reporte de DFS
@@ -132,7 +133,7 @@ Reporte de DFS
 | ![F1](img/DFS_F1.png) | ![F2](img/DFS_F2.png) | ![F3](img/DFS_F3.png) |
 
 
-#### Ejecución de UCS
+### Ejecución de UCS
 
 <pre>
 Reporte de UCS
@@ -155,7 +156,7 @@ Reporte de UCS
 
 
 
-#### Ejecución de fallida de BFS
+### Ejecución de fallida de BFS
 
 Las siguientes pruebas fallaron porque el algoritmo no fue capaz
 de encontrar una ruta entre los nodos de inicio y fin, incluso si
@@ -182,7 +183,7 @@ Reporte de BFS
 | ![F1](img/f/BFS_F1.png) | ![F2](img/f/BFS_F2.png) | ![F3](img/f/BFS_F3.png) |
 
 
-#### Ejecución de fallida de DFS
+### Ejecución de fallida de DFS
 
 <pre>
 Reporte de DFS
@@ -204,7 +205,7 @@ Reporte de DFS
 | ![F1](img/f/DFS_F1.png) | ![F2](img/f/DFS_F2.png) | ![F3](img/f/DFS_F3.png) |
 
 
-#### Ejecución de fallida de UCS
+### Ejecución de fallida de UCS
 
 <pre>
 Reporte de UCS
@@ -226,7 +227,7 @@ Reporte de UCS
 | ![F1](img/f/UCS_F1.png) | ![F2](img/f/UCS_F2.png) | ![F3](img/f/UCS_F3.png) |
 
 
-### Preguntas de análisis
+## Preguntas de análisis
 
 - **¿Por qué BFS garantiza el camino con menos saltos pero no el de menor distancia?**
 
@@ -249,7 +250,7 @@ Producen el mismo resultado cuando el camino de menos arcos (BFS)
 es el mismo que el de menor costo (UCS).
 
 
-### Referencias
+## Referencias
 
 Uso de heapq y queue
 - https://docs.python.org/3/library/heapq.html#basic-examples

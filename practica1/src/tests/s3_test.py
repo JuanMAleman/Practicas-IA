@@ -1,4 +1,4 @@
-from ..s3 import GeneticAlgorithm, BreedingMethod
+from ..s3 import GeneticAlgorithm
 import networkx as nx
 import logging
 
@@ -18,11 +18,30 @@ for k, nodes in EDGES.items():
         G.add_edge(k, dst, length=units)
 
 
-def test_genetic_algorithm_mutation_s_g():
-    inst = GeneticAlgorithm(G, BreedingMethod.CROSSOVER, 3)
-    sn, en = "F", "E"
-    path, total_distance = inst.perform_search(sn, en)
-    logging.debug(inst.report(sn, en, len(G)))
-    for p, d in zip(path, "F → A → B → D → C → E".split(" → ")):
+def test_genetic_algorithm_init_population():
+    inst = GeneticAlgorithm(G, 50, 50, 15)
+    inst._init_population()
+    assert len(inst._population) == 50
+
+
+def test_genetic_algorithm_calculate_distance():
+    inst = GeneticAlgorithm(G, 50, 50, 15)
+    assert inst._calculate_distance("D E C F A B D".split(" ")) == 147
+
+
+def test_genetic_algorithm_mutate():
+    inst = GeneticAlgorithm(G, 50, 50, 15)
+    path = "D E C F A B D".split(" ")
+    for p, d in zip(inst._mutate(path), path):  # Hay una pequeña posibilidad de que esta prueba falle
         assert p == d
-    assert total_distance == 145
+
+
+def test_genetic_algorithm():
+    inst = GeneticAlgorithm(G, 50, 50, 15)
+    path, total_distance = inst.find_optima()
+    logging.info(inst.report(total_nodes=len(G)))
+
+    # La misma ruta en cualquier sentido es óptima
+    # B → A → D → C → E → F
+    # F → E → C → D → A → B
+    assert total_distance == 106

@@ -22,6 +22,13 @@ def valid_distance(value: str) -> float:
     return v
 
 
+def valid_node_amount(value: str) -> int:
+    v = int(value)
+    if 4 > v > 15:
+        raise ValueError
+    return v
+
+
 if __name__ == "__main__":
     # https://docs.python.org/3.14/library/argparse.html
     parser = argparse.ArgumentParser()
@@ -32,6 +39,20 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--start-node", help="Identificador del nodo inicial. "
                                                    "(por defecto = aleatorio)")
     parser.add_argument("-e", "--end-node", help="Identificador del nodo final. (por defecto = aleatorio)")
+
+    if "s3" in sys.argv or "S3" in sys.argv:
+        parser.add_argument("-n", "--nodes", type=valid_node_amount, default=10,
+                            help="Cantidad de nodos en rango de [4, 15] para la sección 3. (por defecto 10)")
+        parser.add_argument("-p", "--population-size", type=lambda v: int(v), default=100,
+                            help="Cantidad de poblaciones para algoritmo genético. (por defecto 100)")
+        parser.add_argument("-gs", "--generations", type=lambda v: int(v), default=50,
+                            help="Cantidad de generaciones para algoritmo genético. (por defecto 50)")
+        parser.add_argument("-b", "--best-sample-size", type=lambda v: int(v), default=5,
+                            help="Cantidad de individuos a seleccionar como mejores para algoritmo genético. "
+                                 "(por defecto 5)")
+        parser.add_argument("-m", "--mutation-rate", type=lambda v: float(v), default=0.5,
+                            help="Probabilidad de mutación, rango de [0, 1]. (por defecto 0.5)")
+
     parser.add_argument("run", type=lambda param: SECTION_OPTIONS[SECTION_OPTIONS.index(param.upper())],
                         help="Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas; "
                              "Sección 2 (S2): Búsqueda Informada; "
@@ -44,7 +65,8 @@ if __name__ == "__main__":
                         help="Bandera para mostrar el grafo utilizado en la ejecución/pruebas")
 
     args = vars(parser.parse_args())
-    logging.basicConfig(level=logging.INFO if args["test"] is None else logging.DEBUG)
+    # logging.basicConfig(level=logging.INFO if args["test"] is None else logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)  # Matplot imprime demasiada información
 
     if args["test"] is not None:
         logging.info("Ejecutando pruebas unitarias...")
@@ -66,6 +88,9 @@ if __name__ == "__main__":
         if args["run"] == section:
             logging.info(f"Ejecutando {module_name['name']}...")
             params = ["address", "distance", "show_graph", "start_node", "end_node"]
+            if args["run"] == "S3":
+                params += ["nodes", "population_size", "generations", "best_sample_size", "mutation_rate"]
+
             _args = {k: v for k, v in args.items() if k in params and v is not None and v}
             module_name['module'].run(**_args)
             logging.info(f"Ejecución de la {module_name['name']} terminada")

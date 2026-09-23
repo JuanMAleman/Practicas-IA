@@ -28,6 +28,12 @@ class UFSA(Metrics):  # "Uninformed Search Algorithms"
         self._data_structure: Union[Queue, LifoQueue, list, None] = None
         self.frontier_snapshots = []
 
+        self._explored_nodes = 0
+        self._total_distance = 0
+        self._total_edges = 0
+        self._max_elements_in_structure = 0
+        self._path = []
+
     def _init_data_structure(self, start_node: Union[int, str]):
         if self._chosen_algorithm == Algorithm.BFS:
             self._data_structure = Queue()
@@ -110,6 +116,16 @@ class UFSA(Metrics):  # "Uninformed Search Algorithms"
         self._end_timer()
         return self._path, self._total_distance
 
+    def report_with_nodes(self, start_node: str = "", end_node: str = "", total_nodes: int = 0) -> str:
+        report = "\n".join(super().report(total_nodes).split("\n")[1:])
+        return (f"Reporte de {self._algorithm}\n"
+                f"  Nodo inicial:     {start_node if start_node else 'sin especificar'}\n"
+                f"  Nodo final:       {end_node if end_node else 'sin especificar'}\n"
+                f"  Nodos expandidos: {self._explored_nodes}\n"
+                f"    Tamaño de\n"
+                f"  frontera máximo:  {self._max_elements_in_structure}\n"   # Máximos nodos en la estructura de datos
+                f"{report}")
+
 
 def plot_graph(g: MultiDiGraph, start_node, end_node, frontier: Optional[list] = None):
     nc = []
@@ -174,15 +190,15 @@ def run(**kwargs):
 
     bfs = UFSA(g, Algorithm.BFS)
     bfs.perform_search(start_node, end_node)
-    print(bfs.report(start_node, end_node, len(nodes)), "\n")
+    print(bfs.report_with_nodes(start_node, end_node, len(nodes)), "\n")
     plot_snapshots(bfs)
 
     dfs = UFSA(g, Algorithm.DFS)
     dfs.perform_search(start_node, end_node)
-    print(dfs.report(start_node, end_node, len(nodes)), "\n")
+    print(dfs.report_with_nodes(start_node, end_node, len(nodes)), "\n")
     plot_snapshots(dfs)
 
     ucs = UFSA(g, Algorithm.UCS)
     ucs.perform_search(start_node, end_node)
-    print(ucs.report(start_node, end_node, len(nodes)), "\n")
+    print(ucs.report_with_nodes(start_node, end_node, len(nodes)), "\n")
     plot_snapshots(ucs)
