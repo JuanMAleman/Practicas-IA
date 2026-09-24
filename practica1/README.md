@@ -1,13 +1,55 @@
 # Práctica 1 - Algoritmos de búsqueda
 
+### Dependencias
+
+<pre>
+osmnx
+networkx
+matplotlib
+pytest
+</pre>
+
+#### Instalar dependencias
+
+```shell
+# Instalar bibliotecas necesarias (Instalación sobre los paquetes globales)
+# Linux y macOS: python3; Windows: python
+python3 -m pip install -r requirements.txt
+``` 
+
 ### Ejecutar
 
+El menu de ayuda cambia en función del argumento `run`,
+
+```shell
+# No se muestran las opciones extras de cada sección
+
+$ python3 main.py -h
+
+usage: main.py [-h] [-t {test-only,both}] [-g] run
+
+positional arguments:
+  run                   Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas;
+                        Sección 2 (S2): Búsqueda Informada; Sección 3 (S3):
+                        Búsqueda local
+
+options:
+  -h, --help            show this help message and exit
+  -t, --test {test-only,both}
+                        Opción que indica que las pruebas unitarias se deben
+                        ejecutar. both: realiza pruebas unitarias y ejecución.
+                        test-only: solo realiza las pruebas unitarias
+  -g, --show-graph      Bandera para mostrar el grafo utilizado en la
+                        ejecución/pruebas
 ```
+
+```shell
+# Opciones por defecto y opciones para la sección 1
+
+$ python3 main.py s1 -h
+
 usage: main.py [-h] [-a ADDRESS] [-d DISTANCE] [-s START_NODE] [-e END_NODE]
-               [-n NODES] [-p POPULATION_SIZE] [-gs GENERATIONS]
-               [-b BEST_SAMPLE_SIZE] [-m MUTATION_RATE]
-               [-i INITIAL_TEMPERATURE] [-mt MINIMUM_TEMPERATURE]
-               [-c COOLING_RATE] [-t {test-only,both}] [-g]
+               [-t {test-only,both}] [-g]
                run
 
 positional arguments:
@@ -29,6 +71,55 @@ options:
   -e, --end-node END_NODE
                         Identificador del nodo final. (por defecto =
                         aleatorio)
+  -t, --test {test-only,both}
+                        Opción que indica que las pruebas unitarias se deben
+                        ejecutar. both: realiza pruebas unitarias y ejecución.
+                        test-only: solo realiza las pruebas unitarias
+  -g, --show-graph      Bandera para mostrar el grafo utilizado en la
+                        ejecución/pruebas
+```
+
+```shell
+# Opciones por defecto y opciones para la sección 2
+
+usage: main.py [-h] [-n NODES] [-d DST_AMOUNT] [-t {test-only,both}] [-g] run
+
+positional arguments:
+  run                   Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas;
+                        Sección 2 (S2): Búsqueda Informada; Sección 3 (S3):
+                        Búsqueda local
+
+options:
+  -h, --help            show this help message and exit
+  -n, --nodes NODES     Cantidad de nodos para la sección 2. (por defecto
+                        1000)
+  -d, --dst-amount DST_AMOUNT
+                        Cantidad de destinos para la sección 2. (por defecto
+                        20)
+  -t, --test {test-only,both}
+                        Opción que indica que las pruebas unitarias se deben
+                        ejecutar. both: realiza pruebas unitarias y ejecución.
+                        test-only: solo realiza las pruebas unitarias
+  -g, --show-graph      Bandera para mostrar el grafo utilizado en la
+                        ejecución/pruebas
+```
+
+```shell
+# Opciones por defecto y opciones para la sección 3
+
+usage: main.py [-h] [-n NODES] [-p POPULATION_SIZE] [-gs GENERATIONS]
+               [-b BEST_SAMPLE_SIZE] [-m MUTATION_RATE]
+               [-i INITIAL_TEMPERATURE] [-mt MINIMUM_TEMPERATURE]
+               [-c COOLING_RATE] [-t {test-only,both}] [-g]
+               run
+
+positional arguments:
+  run                   Sección a ejecutar. Sección 1 (S1): Búsqueda a ciegas;
+                        Sección 2 (S2): Búsqueda Informada; Sección 3 (S3):
+                        Búsqueda local
+
+options:
+  -h, --help            show this help message and exit
   -n, --nodes NODES     Cantidad de nodos en rango de [4, 15] para la sección
                         3. (por defecto 10)
   -p, --population-size POPULATION_SIZE
@@ -55,21 +146,12 @@ options:
                         test-only: solo realiza las pruebas unitarias
   -g, --show-graph      Bandera para mostrar el grafo utilizado en la
                         ejecución/pruebas
-```
 
-**Nota**: Las opciones `--population-size`, `--generations`, 
-`--best-sample-size`, `--mutation-rate`, `--initial-temperature`,
-`--minimum-temperature`, y `--cooling-rate` solo son válidas si se 
-ejecuta la sección 3. Para mostrar el menu de ayuda completo debe
-utilizarse el comando,
-
-```shell
-# De omitirse 's3', se mostrará el menu sin las opciones 
-# para el algoritmo genético y recocido simulado
-python3 main.py s3 -h
 ```
 
 ### Historial de versiones
+
+#### v0.1.5 Merge de reportes
 
 #### v0.1.4 Refactoring and PEP8 compliance
 - Refactoring de nombres de variables

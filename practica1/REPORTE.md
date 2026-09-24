@@ -1,5 +1,37 @@
 # Reporte de práctica
 
+1. [Estructura del proyecto](#Estructura-del-proyecto)
+2. [Pruebas unitarias](#Pruebas-unitarias)
+3. [Sección 1: Búsqueda a ciegas](#Sección-1-Búsqueda-a-ciegas)
+   1. [s1.py](#s1py)
+   2. [Pruebas con grafos con `osmnx`](#Pruebas-con-grafos-con-osmnx)
+   3. [Hardware y software](#Hardware-y-software-S1)
+   4. [Ejecución de BFS](#Ejecución-de-BFS)
+   5. [Ejecución de DFS](#Ejecución-de-DFS)
+   6. [Ejecución de UCS](#Ejecución-de-UCS)
+   7. [Ejecución de fallida de BFS](#Ejecución-de-fallida-de-BFS)
+   8. [Ejecución de fallida de DFS](#Ejecución-de-fallida-de-DFS)
+   9. [Ejecución de fallida de UCS](#Ejecución-de-fallida-de-UCS)
+   10. [Preguntas de análisis](#Preguntas-de-análisis-S1)
+   11. [Conclusiones](#Conclusiones-s1)
+4. [Sección 2: Algoritmos de Búsqueda Informada (A* y Greedy Best-First)](#Sección-2-algoritmos-de-búsqueda-informada-a-y-greedy-best-first)
+   1. [Objetivos](#Objetivos)
+   2. [Tareas requeridas](#Tareas-requeridas)
+   3. [Marco Teórico y Justificación de Heurísticas](#Marco-Teórico-y-Justificación-de-Heurísticas)
+   4. [Demostración de Admisibilidad y Consistencia](#Demostración-de-Admisibilidad-y-Consistencia)
+   5. [Pruebas Experimentales y Resultados](#Pruebas-Experimentales-y-Resultados)
+   6. [Hardware y software](#Hardware-y-software-S2)
+   7. [Cuestionario y Análisis de Resultados](#Cuestionario-y-Análisis-de-Resultados)
+   8. [Conclusiones](#Conclusiones)
+5. [Sección 3: Búsqueda local](#Sección-3-Búsqueda-local)
+   1. [s3.py](#s3py)
+   2. [Hardware y software](#Hardware-y-software-S3)
+   3. [Ejecución de los algoritmos con valores por defecto](#Ejecución-de-los-algoritmos-con-valores-por-defecto)
+   4. [Ejecución de los algoritmos con modificaciones](#Ejecución-de-los-algoritmos-con-modificaciones)
+   5. [Preguntas de análisis y conclusiones](#Preguntas-de-análisis-y-conclusiones)
+6. [Referencias](#Referencias)
+
+
 ## Estructura del proyecto
 
 El proyecto tiene diferentes directorios y archivos,
@@ -22,26 +54,8 @@ Python. En `s1_test` los datos del grafo están descritos en un
 diccionario de datos, estructura que automáticamente ordena las
 llaves, esto tiene como consecuencia que los nodos se insertan 
 de forma ordenada, por lo que al momento de ejecutar el algoritmo
-los nodos adjacentes se exploran de esta forma, esto no 
+los nodos adyacentes se exploran de esta forma, esto no 
 necesariamente sucede en el programa de `busqueda_no_informada.html`.
-
-## Contenidos y algunas decisiones de diseño
-
-### main.py
-
-En `main.py` se utiliza un `parser` de argumentos CLI con el fin de 
-facilitar la ejecución de las diferentes secciones y si se quieren
-cambiar parámetros de ejecución o realizar las pruebas unitarias.
-
-### metrics.py
-
-`metrics.py` contiene todos los parámetros necesarios para dar un
-reporte de ejecución.
-
-### map_download.py
-
-Pequeño archivo con una única tarea: traer grafo de algún sitio,
-que puede ser especificado por CLI, utilizando el módulo de `osmnx`.
 
 
 ## Sección 1: Búsqueda a ciegas
@@ -70,7 +84,7 @@ diferentes clases y funciones,
 - `run(**kwargs)`: punto de entrada que orquesta la ejecución de los
   algoritmos.
 
-## Pruebas con grafos con `osmnx`
+### Pruebas con grafos con `osmnx`
 
 Las pruebas se ejecutaron con la Escuela Superior de Cómputo como
 epicentro, y con todos los nodos a una distancia de 2 km, utilizando
@@ -80,7 +94,7 @@ el siguiente comando,
 python3 main.py s1 --distance 2000 --graph
 ```
 
-### Hardware y software
+### Hardware y software S1
 
 | Nombre  | Valor                  |
 |---------|------------------------|
@@ -228,7 +242,7 @@ Reporte de UCS
 | ![F1](img/f/UCS_F1.png) | ![F2](img/f/UCS_F2.png) | ![F3](img/f/UCS_F3.png) |
 
 
-## Preguntas de análisis
+### Preguntas de análisis S1
 
 - **¿Por qué BFS garantiza el camino con menos saltos pero no el de menor distancia?**
 
@@ -254,6 +268,255 @@ distancia.
 
 Producen el mismo resultado cuando el camino de menos arcos (BFS)
 es el mismo que el de menor costo (UCS).
+
+
+### Conclusiones S1
+
+En entornos urbanos, el algoritmo UCS es el mejor para encontrar 
+la ruta óptima, como se ve en las pruebas, en comparación con BFS
+y DFS.
+
+Existe una relación entre la selección de una mejor ruta y el 
+tamaño de frontera, DFS tuvo la frontera más pequeña, pero a costa
+de una calidad baja, BFS fue el más rápido y UCS fue el que más
+nodos en frontera tuvo.
+
+
+## Sección 2: Algoritmos de Búsqueda Informada (A* y Greedy Best-First)
+
+La siguiente sección documenta la implementación, evaluación y análisis empírico del algoritmo de búsqueda A* utilizando diferentes funciones heurísticas del tipo A*, en comparación con Greedy Best-First Search (GBFS). Se evalúa el desempeño de las heurísticas en términos de nodos expandidos, costo del camino y tiempo de ejecución; además el Factor de ramificación efectiva b* en los resultados nos muestra la eficiencia que tiene cada algoritmo en el control de espacio de búsqueda. Cada uno de los datos anteriores se calcula sobre un grafo urbano extraído de OpenStreetMap. Los resultados demuestran que el uso de una heurística admisible y consistente reduce el espacio de búsqueda explorado manteniendo la optimalidad del costo del camino.
+
+### Objetivos
+
+#### Objetivo General
+
+Implementar A* con múltiples heurísticas geográficas y demostrar empíricamente que una heurística
+admisible reduce los nodos expandidos respecto a UCS sin comprometer la optimalidad del camino.
+
+### Tareas requeridas
+
+- Implementar A* apoyado en una cola de prioridad que ordene por $f(n) = g(n) + h(n)$.
+- Definir e implementar tres heurísticas geográficas: Distancia Euclidiana ($h_1$), Distancia de Haversine ($h_2$) y una heurística personalizada ($h_3$).
+- Verificar la admisibilidad de cada heurística de forma experimental o teórica que $h(n) <= costo real minimo$.
+- Implementar el algoritmo Greedy Best-First Search y comparar contra A* para ilustrar no-optimalidad.
+- Medir la calidad informativa de las heurísticas mediante el factor de ramificación efectiva ($b^*$).
+- Visualizar interactivamente las rutas generadas sobre el mapa urbano utilizando la librería `folium`.
+- Construir tablas comparativas.
+
+### Marco Teórico y Justificación de Heurísticas
+
+#### Algoritmos de Búsqueda
+
+**A\* Search:** Algoritmo de búsqueda informada que selecciona el siguiente nodo a expandir según la función de evaluación $f(n) = g(n) + h(n)$, donde $g(n)$ es el costo acumulado que suma cada nodo que se explora(puede ser parte de la solución final o no) desde el origen hasta el nodo $n$, y $h(n)$ es la estimación del costo restante hasta el destino(costo calculado en línea recta desde el nodo actual hasta el nodo objetivo).
+
+**Greedy Best-First Search (GBFS):** Búsqueda informada que evalúa nodos únicamente por $f(n) = h(n)$. Prioriza la cercanía aparente a la meta sin considerar el costo acumulado $g(n)$, lo que puede provocar una solución que no es la más óptima a cambio de velocidad.
+
+#### Definición de Heurísticas Implementadas
+
+**$h_1$ — Distancia Euclidiana (Proyectada)**
+
+Calcula la línea recta cartesiana considerando las coordenadas proyectadas $(x_n, y_n)$ y $(x_d, y_d)$, lo que provoca una distancia teórica ideal(no se toma en cuenta la curvatura de la tierra):
+
+$$h_1(n) = \sqrt{(x_d - x_n)^2 + (y_d - y_n)^2}$$
+
+**$h_2$ — Distancia de Haversine**
+
+Calcula el camino más corto a lo largo de la superficie de una esfera (distancia ortodrómica) a partir de las coordenadas en latitud y longitud $(\phi, \lambda)$ expresadas en radianes:
+
+$$h_2(n) = 2R \cdot \arcsin\left( \sqrt{\sin^2\left(\frac{\Delta \phi}{2}\right) + \cos(\phi_n)\cos(\phi_d)\sin^2\left(\frac{\Delta \lambda}{2}\right)} \right)$$
+
+Donde $R \approx 6{,}371{,}000\ \text{m}$ es el radio medio terrestre.
+
+**$h_3$ — Heurística Personalizada (Distancia + Estimación de Giros)**
+
+Diseñada para modelar el costo en redes viales combinando la distancia de Haversine con una penalización estimada por cambios de dirección hacia el nodo destino:
+
+$$h_3(n) = h_2(n) + \alpha \cdot \theta(n)$$
+
+Donde $\theta(n)$ estima la desviación angular respecto al vector hacia la meta y $\alpha$ es un parámetro de ponderación ajustable.
+
+### Demostración de Admisibilidad y Consistencia
+
+Para garantizar la optimalidad de A* en grafos de estado, la heurística $h(n)$ debe ser **admisible**: nunca debe sobreestimar el costo real para alcanzar la meta desde ningún nodo $n$, en la exploración de nodos cuando esto sucede ese nodo se excluye de la solución y el algoritmo continúa explorando otros nodos para encontrar la solución más óptima.
+
+$$h(n) \le h^*(n) \quad \forall n$$
+
+#### Análisis de Admisibilidad de $h_1$ y $h_2$
+
+- **$h_2$ (Haversine):** Representa la distancia geodésica mínima en línea recta sobre la esfera terrestre entre el nodo $n$ y el destino. Como ningún camino físico por calles terrestres puede ser más corto que la línea recta geográfica que une ambos puntos, se cumple estrictamente $h_2(n) \le h^*(n)$. Por lo tanto, $h_2$ es admisible y consistente.
+
+- **$h_1$ (Euclidiana):** En la impresión de la solución en el grafo dado esta se muestra igual a haversine, y a la solución ponderada, sin embargo, tenemos un porcentaje de error en las distancias que se comprueba por nuestra distancia calculada entre nuestros nodos empresa y destinos conectados con líneas rectas, dado que los costos de cada arista nos los da por defecto openstreetmap con valores reales(curvatura terrestre) la solución se nos da con ese costo total. Sin embargo, es calculable por el porcentaje de diferencia dado el valor real de la solución de manera euclidiana.
+
+#### Análisis de $h_3$ (Heurística Ponderada)
+
+Si $\alpha > 0$, la adición de la estimación de giros puede ocasionar que en algunos casos $h_3(n) > h^*(n)$ (por ejemplo, si el camino real requiere giros que acortan el tiempo o si sobreestima el costo de maniobra). Si $h_3(n)$ sobreestima el costo real, deja de ser admisible y A* pierde la garantía teórica de encontrar el camino estrictamente óptimo.
+
+### Pruebas Experimentales y Resultados
+
+Las pruebas se ejecutaron sobre un sub grafo urbano extraído mediante OSMnx, las zonas que comprenden el grafo(Cuauhtémoc, Gustavo A. Madero, Venustiano Carranza y Azcapotzalco) fueron delimitadas a un espacio de pruebas elegido de manera random con los siguientes valores(500 y 1500 nodos con 1 empresa y 20 destinos, 500 nodos con 1 empresa y 99 destinos y 1500 con 1 empresa y 299 destinos).
+
+#### Tabla Comparativa de Desempeño
+
+### Hardware y software S2
+
+| Nombre  | Valor               |
+|---------|---------------------|
+| CPU     | Intel core i5 7300U |
+| Memoria | 8 GB LPDDR3-SDRAM   |
+| OS      | Windows 10 pro 22H2 |
+| Python  | 3.14.7              |
+
+#### Pruebas
+
+*1er ejecución* python main.py s2 --test test-only
+
+Prueba 500 nodos, 1 empresa, 19 destinos.
+
+Distancia euclidiana(directa) total = 14254.40m
+
+Distancia Haversine(directa) total = 14279.45m
+
+| Algoritmo / Heurística   | Distancia en metros | Nodos expandidos | Tiempo de Ejecución (ms) | Factor $b^*$ | Cantidad de nodos de la solución |
+|--------------------------|---------------------|------------------|--------------------------|--------------|----------------------------------|
+| A* $h_1$ (Euclidiana)    | 16967.05            | 745              | 14.03                    | 1.013        | 179                              |
+| A* $h_2$ (Haversine)     | 16967.05            | 745              | 19.37                    | 1.013        | 179                              |
+| A* $h_3$ (Personalizada) | 16967.05            | 896              | 17.69                    | 1.015        | 179                              |
+| Greedy Best-First        | 17222.35            | 310              | 3.10                     | 1.005        | 183                              |
+
+Prueba 1500 nodos, 1 empresa, 19 destinos.
+
+Distancia euclidiana(directa) total = 15195.42m
+
+Distancia Haversine(directa) total = 15222.12m
+
+| Algoritmo / Heurística   | Distancia en metros | Nodos expandidos | Tiempo de Ejecución (ms) | Factor $b^*$ | Cantidad de nodos de la solución |
+|--------------------------|---------------------|------------------|--------------------------|--------------|----------------------------------|
+| A* $h_1$ (Euclidiana)    | 25615.97            | 1007             | 16.93                    | 1.009        | 251                              |
+| A* $h_2$ (Haversine)     | 25615.97            | 1004             | 27.20                    | 1.009        | 251                              |
+| A* $h_3$ (Personalizada) | 25615.97            | 1468             | 23.23                    | 1.012        | 251                              |
+| Greedy Best-First        | 25615.97            | 567              | 5.00                     | 1.004        | 286                              |
+
+Prueba 500 nodos, 1 empresa, 99 destinos.
+
+Distancia euclidiana(directa) total = 21669.60m
+
+Distancia Haversine(directa) total = 21707.68m
+
+| Algoritmo / Heurística   | Distancia en metros | Nodos expandidos | Tiempo de Ejecución (ms) | Factor $b^*$ | Cantidad de nodos de la solución |
+|--------------------------|---------------------|------------------|--------------------------|--------------|----------------------------------|
+| A* $h_1$ (Euclidiana)    | 39834.01            | 1857             | 69.12                    | 1.003        | 590                              |
+| A* $h_2$ (Haversine)     | 39834.01            | 1847             | 120.78                   | 1.003        | 590                              |
+| A* $h_3$ (Personalizada) | 39772.99            | 2448             | 89.86                    | 1.004        | 599                              |
+| Greedy Best-First        | 41404.32            | 1043             | 21.63                    | 1.002        | 594                              |
+
+Prueba 1500 nodos, 1 empresa, 299 destinos.
+
+Distancia euclidiana(directa) total = 42428.53m
+
+Distancia Haversine(directa) total = 42503.10m
+
+| Algoritmo / Heurística   | Distancia en metros | Nodos expandidos | Tiempo de Ejecución (ms) | Factor $b^*$ | Cantidad de nodos de la solución |
+|--------------------------|---------------------|------------------|--------------------------|--------------|----------------------------------|
+| A* $h_1$ (Euclidiana)    | 94784.03            | 4022             | 278.10                   | 1.002        | 1249                             |
+| A* $h_2$ (Haversine)     | 94784.03            | 4012             | 637.76                   | 1.002        | 1249                             |
+| A* $h_3$ (Personalizada) | 96620.83            | 4853             | 348.54                   | 1.002        | 1281                             |
+| Greedy Best-First        | 97455.00            | 2701             | 144.67                   | 1.001        | 1273                             |
+
+_______________________________________________________________________________________________________________________
+
+*2da ejecución* python main.py s2 --test test-only
+
+Prueba 500 nodos, 1 empresa, 19 destinos.
+
+Distancia euclidiana(directa) total = 13228.52m
+
+Distancia Haversine(directa) total = 13251.77m
+
+| Algoritmo / Heurística   | Distancia en metros | Nodos expandidos | Tiempo de Ejecución (ms) | Factor $b^*$ | Cantidad de nodos de la solución |
+|--------------------------|---------------------|------------------|--------------------------|--------------|----------------------------------|
+| A* $h_1$ (Euclidiana)    | 20032.24            | 862              | 15.74                    | 1.012        | 208                              |
+| A* $h_2$ (Haversine)     | 20032.24            | 859              | 24.91                    | 1.011        | 208                              |
+| A* $h_3$ (Personalizada) | 20032.24            | 1153             | 20.22                    | 1.014        | 208                              |
+| Greedy Best-First        | 22675.11            | 437              | 4.04                     | 1.005        | 234                              |
+
+Prueba 1500 nodos, 1 empresa, 19 destinos.
+
+Distancia euclidiana(directa) total = 11399.65m
+
+Distancia Haversine(directa) total = 11419.69m
+
+| Algoritmo / Heurística   | Distancia en metros | Nodos expandidos | Tiempo de Ejecución (ms) | Factor $b^*$ | Cantidad de nodos de la solución |
+|--------------------------|---------------------|------------------|--------------------------|--------------|----------------------------------|
+| A* $h_1$ (Euclidiana)    | 11563.25            | 918              | 16.46                    | 1.020        | 151                              |
+| A* $h_2$ (Haversine)     | 11563.25            | 918              | 25.68                    | 1.020        | 151                              |
+| A* $h_3$ (Personalizada) | 11563.25            | 1103             | 20.49                    | 1.021        | 151                              |
+| Greedy Best-First        | 12375.67            | 300              | 3.28                     | 1.008        | 149                              |
+
+Prueba 500 nodos, 1 empresa, 99 destinos.
+
+Distancia euclidiana(directa) total = 22910.13m
+
+Distancia Haversine(directa) total = 22950.40m
+
+| Algoritmo / Heurística   | Distancia en metros | Nodos expandidos | Tiempo de Ejecución (ms) | Factor $b^*$ | Cantidad de nodos de la solución |
+|--------------------------|---------------------|------------------|--------------------------|--------------|----------------------------------|
+| A* $h_1$ (Euclidiana)    | 47654.24            | 2242             | 76.64                    | 1.004        | 614                              |
+| A* $h_2$ (Haversine)     | 47654.24            | 2239             | 129.82                   | 1.004        | 614                              |
+| A* $h_3$ (Personalizada) | 47654.24            | 2760             | 92.88                    | 1.004        | 614                              |
+| Greedy Best-First        | 51020.50            | 1345             | 23.32                    | 1.002        | 636                              |
+
+Prueba 1500 nodos, 1 empresa, 299 destinos.
+
+Distancia euclidiana(directa) total = 39960.84m
+
+Distancia Haversine(directa) total = 40031.07m
+
+| Algoritmo / Heurística   | Distancia en metros | Nodos expandidos | Tiempo de Ejecución (ms) | Factor $b^*$ | Cantidad de nodos de la solución |
+|--------------------------|---------------------|------------------|--------------------------|--------------|----------------------------------|
+| A* $h_1$ (Euclidiana)    | 105910.76           | 4216             | 287.05                   | 1.001        | 1407                             |
+| A* $h_2$ (Haversine)     | 105910.76           | 4206             | 618.48                   | 1.001        | 1407                             |
+| A* $h_3$ (Personalizada) | 101855.31           | 4888             | 354.17                   | 1.002        | 1345                             |
+| Greedy Best-First        | 109594.14           | 2713             | 143.68                   | 1.001        | 1438                             |
+
+#### Factor de Ramificación Efectiva ($b^*$)
+
+El factor de ramificación efectiva mide la eficiencia de una función heurística. Se define como el número equivalente de hijos por nodo en un árbol uniforme de profundidad $d$ para explorar $N$ nodos totales:
+
+$$N + 1 = 1 + b^* + (b^*)^2 + \dots + (b^*)^d = \frac{(b^*)^{d+1} - 1}{b^* - 1}$$
+
+Un valor de $b^*$ cercano a 1.0 indica una heurística altamente informada que guía la búsqueda casi en línea recta hacia la meta con mínima exploración infructuosa.
+
+En las pruebas el algoritmo de Greedy Best-First la mayor parte de las veces tuvo un factor b* más cercano a 1.00 que las heurísticas A*, sin embargo, la solución entregada no es la más óptima.
+
+Como se predijo en el análisis de admisibilidad existen casos en los que nuestra heurística ponderada falla(específicamente en nuestro test con 1500 nodos, 1 empresa y 299 destinos) y empieza a entregar datos que ya no tienen sentido a pesar de imprimir la misma solución.
+
+De los datos observados de la prueba de tests se puede decir que el algoritmo más balanceado es la heurística con distancias euclidianas, dado que entrega el camino más óptimo, dentro de las heurísticas A* es la que menos tiempo tarda en ejecutarse, y entre más nodos tengan los grafos es más óptimo su b* en algunos casos siendo igual al que tiene Greedy Best-First.
+
+### Cuestionario y Análisis de Resultados
+
+**1. ¿Por qué $h_2$ (Haversine) es más precisa que $h_1$ (Euclidiana) para coordenadas geográficas?**
+
+Es más precisa por el hecho de que tiene los costos reales(distancias en metros) de las calles con respecto a la curvatura de la tierra, por ende al momento de recalcular las distancias una vez que avanzamos por los nodos, vamos a elegir el que tenga el mejor costo de una manera más realista lo que en ocasiones puede alterar los nodos expandidos.
+
+**2. Construye un ejemplo concreto donde Greedy falla en el mapa descargado.**
+
+*Escenario de falla:* Supongamos una configuración en forma de "calle sin salida" o una barrera geográfica (un río, una vía de tren o una manzana muy larga) ubicada entre el origen $S$ y el destino $T$.
+- *Comportamiento de GBFS:* GBFS evalúa únicamente $h(n)$. Ante una bifurcación, elegirá sistemáticamente la calle que se dirija frontalmente hacia $T$, ingresando hasta el fondo de una calle sin salida o bordeando la barrera por el tramo más largo simplemente porque los nodos intermedios están físicamente más cerca de $T$.
+- *Comportamiento de A\*:* Al incluir $g(n)$, A* detecta que el costo acumulado por adentrarse en la vía muerta o rodear la barrera incrementa el costo total $f(n)$, por lo que aborta ese camino y explora una vía alternativa más larga visualmente, pero óptima en distancia real acumulada.
+
+**3. ¿Qué ocurre si se multiplica $h$ por una constante $k > 1$ (heurística inflada)? ¿Sigue siendo admisible?**
+
+Si tomamos $h'(n) = k \cdot h(n)$ con $k > 1$:
+
+- *Admisibilidad:* Se pierde la admisibilidad. Si para algún nodo el costo estimado $h(n)$ era igual o cercano al costo real óptimo $h^*(n)$, al multiplicarlo por $k > 1$ se obtiene $h'(n) > h^*(n)$, violando la condición $h'(n) \le h^*(n)$.
+- *Optimalidad:* A* pierde la garantía de encontrar el camino más corto o de menor costo.
+- *Efecto práctico (Weighted A\*):* A pesar de perder la optimalidad estricta, la búsqueda se vuelve mucho más "agresiva" o enfocada hacia la meta, reduciendo considerablemente los nodos expandidos y el tiempo de cómputo. El costo de la ruta resultante estará acotado por un factor superior máximo de $k \cdot C^*$.
+
+### Conclusiones
+
+- **Eficiencia en la búsqueda:** La incorporación de una heurística geográfica en A* reduce el espacio de búsqueda explorado en comparación con Greedy Best-First sin perder la calidad ni la optimalidad del camino encontrado.
+- **Selección de heurísticas:** Para análisis sobre mapas en coordenadas geográficas (Lat/Lon), la distancia de Haversine ($h_2$) ofrece la estimación de menor distorsión y garantiza admisibilidad y consistencia estrictas.
+- **Compromiso velocidad-optimalidad:** Greedy Best-First Search expande notablemente menos nodos y ejecuta más rápido, pero no garantiza obtener la solución más óptima.
 
 
 ## Sección 3: Búsqueda local
@@ -285,7 +548,7 @@ diferentes clases y funciones,
 - `run(**kwargs)`: punto de entrada que orquesta la ejecución de los
   algoritmos.
 
-### Hardware y software
+### Hardware y software S3
 
 | Nombre  | Valor                  |
 |---------|------------------------|
@@ -401,7 +664,7 @@ Reporte de Recocido simulado
 |---------------------|---------------------|
 
 
-## Preguntas de análisis
+### Preguntas de análisis y conclusiones
 
 - **¿Cómo afecta la temperatura inicial T₀ de SA a la diversidad de soluciones exploradas?**
 
@@ -563,16 +826,28 @@ Uso de heapq y queue
 Uso de osmnx
 - https://osmnx.readthedocs.io/en/stable/user-reference.html
 
+Documentación networkx
+- https://networkx.org/documentation/stable/tutorial.html#attributes
+
+Documentación Pytest
+- https://docs.pytest.org/en/stable/
+
 Uso de argparse
 - https://docs.python.org/3.14/library/argparse.html
 
 Algoritmos DFS, BFS y UCS
 - Programa web proporcionado: `busqueda_no_informada.html`
 
+Algoritmo de búsqueda heurística A*
+- https://www.ecured.cu/Algoritmo_de_Búsqueda_Heurística_A*
+
+Algoritmo A*
+- https://www.datacamp.com/es/tutorial/a-star-algorithm
+
 Algoritmo genético
 - https://antonio-richaud.com/biblioteca/archivo/Algoritmos-geneticos/algoritmos-geneticos.pdf
 
-Algoritmo de recocio simulado
+Algoritmo de recocido simulado
 - https://optimization.cbe.cornell.edu/index.php?title=Simulated_annealing
 
 Otra documentación consultada

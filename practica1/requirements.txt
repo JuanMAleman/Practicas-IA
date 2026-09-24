@@ -1,2 +1,4 @@
 osmnx
 pytest
+networkx
+matplotlib
