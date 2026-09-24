@@ -27,7 +27,7 @@ class Metrics:
         if self._start_time == -1:
             logging.warning("_is_timeout: no se realizó llamada a _start_timer")
             return False
-        return (time.time_ns() - self._start_time) > self._timeout
+        return (time.time_ns() - self._start_time) / 10e8 > self._timeout
 
     @property
     def _raw_time(self):

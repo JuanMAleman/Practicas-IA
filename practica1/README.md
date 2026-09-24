@@ -151,6 +151,8 @@ options:
 
 ### Historial de versiones
 
+#### v0.1.6 Corrección de errores en S1
+
 #### v0.1.5 Merge de reportes
 
 #### v0.1.4 Refactoring and PEP8 compliance

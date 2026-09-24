@@ -118,7 +118,7 @@ Reporte de BFS
     Tamaño de
   frontera máximo:  848
     Tiempo de
-    ejecución:      4.3967 ms 
+    ejecución:      431.3000 us 
 </pre>
 
 | Frontera 1            | Frontera 2            | Frontera 3            |
@@ -140,7 +140,7 @@ Reporte de DFS
     Tamaño de
   frontera máximo:  31
     Tiempo de
-    ejecución:      58.2731 ms 
+    ejecución:      3.1042 ms
 </pre>
 
 | Frontera 1            | Frontera 2            | Frontera 3            |
@@ -162,7 +162,7 @@ Reporte de UCS
     Tamaño de
   frontera máximo:  1202
     Tiempo de
-    ejecución:      13.0460 ms 
+    ejecución:      552.7000 us 
 </pre>
 
 | Frontera 1            | Frontera 2            | Frontera 3            |

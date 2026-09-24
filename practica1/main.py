@@ -112,7 +112,7 @@ if __name__ == "__main__":
             params = ["show_graph"]
 
             if args["run"] == "S1":
-                params = ["address", "distance", "start_node", "end_node"]
+                params += ["address", "distance", "start_node", "end_node"]
 
             if args["run"] == "S2":
                 params += ["nodes", "dst_amount"]

@@ -1,5 +1,7 @@
 # Prácticas de IA
 
+https://github.com/JuanMAleman/Practicas-IA
+
 En este repositorio se encuentran todas las prácticas que
 se realizaran a lo largo del semestre 27/1 en la materia 
 de inteligencia artificial en el grupo 6CV2.
