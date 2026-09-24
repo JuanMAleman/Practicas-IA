@@ -1,76 +1,36 @@
-# Fase 2 — Algoritmos de Búsqueda en Grafos sobre Redes Viales
+# Prácticas de IA
 
-En esta fase de la práctica se implementa y compara algoritmos de búsqueda en grafos (A* con heurística Euclidiana, Haversine y Combinada vs. Greedy Best-First) sobre redes viales extraídas de OpenStreetMap mediante `osmnx`.
+En este repositorio se encuentran todas las prácticas que
+se realizaran a lo largo del semestre 27/1 en la materia 
+de inteligencia artificial en el grupo 6CV2.
 
-## Requisitos Previos e Instalación
+### Integrantes de equipo
 
-**Windows**
+- Juan Manriquez [@JuanMAleman](https://github.com/JuanMAleman/)
+- Cristopher De La O [@cdelaof26](https://github.com/cdelaof26/)
+- José Omar Aguilar [@Jose-omar-aguilar](https://github.com/Jose-omar-aguilar)
+- Ana Fabiola Robles
+- Axel Paredes  [@A-20AA](https://github.com/A-20AA)
 
-```bash
-python -m venv venv
-.\venv\Scripts\activate
-```
+### Ejecución de prácticas
 
-**Linux / macOS**
+```shell
+# Clonar repositorio
+git clone https://github.com/JuanMAleman/IA-Practicas
+``` 
 
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
+```shell
+# Ingresar al directorio de la práctica a probar
+cd practica1
+``` 
 
-**Librerías**
+```shell
+# Instalar bibliotecas necesarias (Instalación sobre los paquetes globales)
+# Linux y macOS: python3; Windows: python
+python3 -m pip install -r requirements.txt
+``` 
 
-```bash
-pip install osmnx networkx matplotlib pytest
-```
-
-## Estructura del Proyecto
-
-```
-.
-├── cache/
-│
-├── src/
-│   └── fase2.py          # Script principal con los algoritmos y subgrafo
-│
-├── tests/
-│   ├── test1.py          # Prueba individual
-│   ├── test2.py          # Prueba individual
-│   └── test3.py          # Prueba individual
-│
-├── ai_log.md              # Reporte de uso de IA (de ser el caso)
-│
-└── README.md
-```
-
-## Especificaciones del Equipo de Prueba
-
-| Componente         | Detalle                       |
-|--------------------|-------------------------------|
-| Equipo             | HP Elite X2 1012 G2           |
-| Procesador         | Intel core i5 7300U           |
-| Memoria RAM        | 8.00 GB LPDDR3-SDRAM 1867 Mhz |
-| Almacenamiento     | 238 GB SSD                    |
-| Sistema Operativo  | Windows 10 pro 22H2           |
-| Tarjeta Gráfica    | Intel HD Graphics 620         |
-| Python             | 3.14.7                        |
-
-## Ubicarse en la Carpeta Raíz del Proyecto
-
-```bash
-cd ruta/a/tu/proyecto
-```
-
-## Ejecución del Código
-
-**Script principal**
-
-```bash
-python src/fase2.py
-```
-
-**Pruebas**
-
-```bash
-pytest -v -s
-```
+```shell
+# Mostrar menu de ayuda
+python3 main.py -h
+``` 

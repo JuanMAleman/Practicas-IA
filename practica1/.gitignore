@@ -1,0 +1,9 @@
+# Directorios
+cache
+.idea
+.vs
+.vscode
+
+# Archivos
+*.DS_Store
+*.pyc

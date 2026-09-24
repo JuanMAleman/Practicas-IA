@@ -1,6 +1,7 @@
 # Registro de Uso de IA
 
-En este documento se registra el uso de IA como apoyo para la realización de la practica 1.
+En este documento se registra el uso de IA como apoyo para la 
+realización ciertas secciones de la práctica 1.
 
 ## Herramienta(s) utilizada(s)
 
@@ -12,7 +13,7 @@ En este documento se registra el uso de IA como apoyo para la realización de la
 
 ## Registro de Interacciones
 
-busqueda informada grafos
+búsqueda informada grafos
 
 **Prompt utilizado:**
 
@@ -53,7 +54,7 @@ No directamente. El nodo con el \(f(n)\) de menor costo no es la solución autom
 
 **Uso que se le dio / Observaciones:**
 
-F(n) es el nodo de menor costo que el algoritmo decide explorar, al final cuando haya explorado todos los nodos de menor costo y llegue al ultimo nodo destino suma los costos de cada una de las calles(aristas) por las que viajo y ese es el costo total de la solución, de igual forma con estos nodos y aristas se va a armar de manera visual la solucion en los grafos.
+F(n) es el nodo de menor costo que el algoritmo decide explorar, al final cuando haya explorado todos los nodos de menor costo y llegue al último nodo destino suma los costos de cada una de las calles(aristas) por las que viajo y ese es el costo total de la solución, de igual forma con estos nodos y aristas se va a armar de manera visual la solución en los grafos.
 
 ---
 
@@ -71,7 +72,7 @@ oye una pregunta en este algortmo se usan latitudes de los puntos para saber que
 
 **Uso que se le dio / Observaciones:**
 
-Calculo de las distancias euclidianas, haverstine y ponderada usa las latitudes y longitudes de los nodos.
+Cálculo de las distancias euclidianas, haverstine y ponderada usa las latitudes y longitudes de los nodos.
 
 ---
 
@@ -138,7 +139,7 @@ Dime el número de tu opción o compárteme un pedazo de tu código actual para 
 
 **Uso que se le dio / Observaciones:**
 
-Inicialmente usaba una logica similar para realizar los test, los cuales corrian con python nombretest.py, despues se cambio a pytest -v -s
+Inicialmente, usaba una logica similar para realizar los test, los cuales corrían con python nombretest.py, después se cambió a pytest -v -s
 
 ---
 
@@ -174,7 +175,7 @@ Dime el número de la opción que prefieras o descríbeme brevemente tu código 
 
 **Uso que se le dio / Observaciones:**
 
-Preparar el README.md para señalar las instrucciones a seguir para configurar un entorno de ejecucion para nuestro codigo fase2.py y nuestros tests.
+Preparar el README.md para señalar las instrucciones a seguir para configurar un entorno de ejecución para nuestro código fase2.py y nuestros tests.
 
 ---
 
@@ -193,7 +194,7 @@ Una cola de prioridad es un tipo de dato abstracto similar a una cola convencion
 
 **Uso que se le dio / Observaciones:**
 
-Conocimiento teorico de la cola de prioridad.
+Conocimiento teórico de la cola de prioridad.
 
 ---
 
@@ -259,7 +260,7 @@ Usa el código con precaución.🔍 Puntos clave del código:heapq.heappush(list
 
 **Uso que se le dio / Observaciones:**
 
-Este codigo ayudo a implementar la cola de prioridad en nuestro codigo python, con el objetivo de que se elijan los caminos con el menor costo, en especifico esto lo utilizamos en nuestras funciones AlgoritmoAeuclidiano, AlgoritmoAhaversine, AlgoritmoACombinado y AlgoritmoGreedyEuclidiano.
+Este código ayudó a implementar la cola de prioridad en nuestro código python, con el objetivo de que se elijan los caminos con el menor costo, en específico esto lo utilizamos en nuestras funciones AlgoritmoAeuclidiano, AlgoritmoAhaversine, AlgoritmoACombinado y AlgoritmoGreedyEuclidiano.
 
 ---
 
@@ -334,4 +335,4 @@ Dime qué opción prefieres o comparte el fragmento para dejarlo listo.
 
 ## Resumen General del Uso de IA
 
-- **El uso de IA se limito a información teórica y ciertos codigos muy especificos la mayor parte de las veces la documentación despejo las dudas**
+- **El uso de IA se limitó a información teórica y ciertos códigos muy específicos la mayor parte de las veces la documentación despejo las dudas**
