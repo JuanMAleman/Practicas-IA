@@ -22,7 +22,14 @@ def valid_distance(value: str) -> float:
     return v
 
 
-def valid_node_amount(value: str) -> int:
+def valid_node_amount_s2(value: str) -> int:
+    v = int(value)
+    if v < 5:
+        raise ValueError
+    return v
+
+
+def valid_node_amount_s3(value: str) -> int:
     v = int(value)
     if v < 4 or v > 15:
         raise ValueError
@@ -32,16 +39,24 @@ def valid_node_amount(value: str) -> int:
 if __name__ == "__main__":
     # https://docs.python.org/3.14/library/argparse.html
     parser = argparse.ArgumentParser()
-    parser.add_argument("-a", "--address", help="Dirección del punto del cual se descargará el grafo. "
-                                                "(por defecto = 'Escuela Superior de Cómputo')")
-    parser.add_argument("-d", "--distance", type=valid_distance,
-                        help="Distancia a la redonda, en metros, que abarcará el grafo. (por defecto = 1000)")
-    parser.add_argument("-s", "--start-node", help="Identificador del nodo inicial. "
-                                                   "(por defecto = aleatorio)")
-    parser.add_argument("-e", "--end-node", help="Identificador del nodo final. (por defecto = aleatorio)")
+    if "s1" in sys.argv or "S1" in sys.argv:
+        parser.add_argument("-a", "--address", help="Dirección del punto del cual se descargará el grafo. "
+                                                    "(por defecto = 'Escuela Superior de Cómputo')")
+        parser.add_argument("-d", "--distance", type=valid_distance,
+                            help="Distancia a la redonda, en metros, que abarcará el grafo. (por defecto = 1000)")
+        parser.add_argument("-s", "--start-node", help="Identificador del nodo inicial. "
+                                                       "(por defecto = aleatorio)")
+        parser.add_argument("-e", "--end-node", help="Identificador del nodo final. "
+                                                     "(por defecto = aleatorio)")
+
+    if "s2" in sys.argv or "S2" in sys.argv:
+        parser.add_argument("-n", "--nodes", type=valid_node_amount_s2, default=1000,
+                            help="Cantidad de nodos para la sección 2. (por defecto 1000)")
+        parser.add_argument("-d", "--dst-amount", type=valid_node_amount_s2, default=20,
+                            help="Cantidad de destinos para la sección 2. (por defecto 20)")
 
     if "s3" in sys.argv or "S3" in sys.argv:
-        parser.add_argument("-n", "--nodes", type=valid_node_amount, default=10,
+        parser.add_argument("-n", "--nodes", type=valid_node_amount_s3, default=10,
                             help="Cantidad de nodos en rango de [4, 15] para la sección 3. (por defecto 10)")
         parser.add_argument("-p", "--population-size", type=lambda v: int(v), default=100,
                             help="Cantidad de poblaciones para algoritmo genético. (por defecto 100)")
@@ -94,12 +109,20 @@ if __name__ == "__main__":
     for section, module_name in SECTIONS.items():
         if args["run"] == section:
             logging.info(f"Ejecutando {module_name['name']}...")
-            params = ["address", "distance", "show_graph", "start_node", "end_node"]
+            params = ["show_graph"]
+
+            if args["run"] == "S1":
+                params = ["address", "distance", "start_node", "end_node"]
+
+            if args["run"] == "S2":
+                params += ["nodes", "dst_amount"]
+
             if args["run"] == "S3":
                 params += ["nodes", "population_size", "generations", "best_sample_size", "mutation_rate"]
                 params += ["initial_temperature", "minimum_temperature", "cooling_rate"]
 
             _args = {k: v for k, v in args.items() if k in params and v is not None and v}
+
             module_name['module'].run(**_args)
             logging.info(f"Ejecución de la {module_name['name']} terminada")
             sys.exit(0)

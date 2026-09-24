@@ -71,6 +71,16 @@ python3 main.py s3 -h
 
 ### Historial de versiones
 
+#### v0.1.4 Refactoring and PEP8 compliance
+- Refactoring de nombres de variables
+- Refactoring de longitud de lineas
+- Agregada función `run(**kwargs)`
+- Cambio de `print` por `logging`
+- Merge de test y refactoring
+- Reducción de código duplicado
+
+#### v0.1.3 Merge de ramas
+
 #### v0.1.2 Última parte del reporte de la sección 3
 
 #### v0.1.1 Implementación de `SimulatedAnnealing` y reporte de la sección 3
