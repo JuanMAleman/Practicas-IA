@@ -193,11 +193,13 @@ def run(**kwargs):
     print(bfs.report_with_nodes(start_node, end_node, len(nodes)), "\n")
     plot_snapshots(bfs)
 
+    g = fetch_graph(*kwargs)
     dfs = UFSA(g, Algorithm.DFS)
     dfs.perform_search(start_node, end_node)
     print(dfs.report_with_nodes(start_node, end_node, len(nodes)), "\n")
     plot_snapshots(dfs)
 
+    g = fetch_graph(*kwargs)
     ucs = UFSA(g, Algorithm.UCS)
     ucs.perform_search(start_node, end_node)
     print(ucs.report_with_nodes(start_node, end_node, len(nodes)), "\n")

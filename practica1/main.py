@@ -24,7 +24,7 @@ def valid_distance(value: str) -> float:
 
 def valid_node_amount(value: str) -> int:
     v = int(value)
-    if 4 > v > 15:
+    if v < 4 or v > 15:
         raise ValueError
     return v
 

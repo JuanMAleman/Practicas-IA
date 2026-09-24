@@ -29,6 +29,7 @@ def format_time(start_time: float, end_time: float) -> str:
         return "-1"
 
     t = end_time - start_time
+    t /= 10e9
     if t > 1:
         return f"{t:.4f} s"
 

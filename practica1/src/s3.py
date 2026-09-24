@@ -48,6 +48,8 @@ class GeneticAlgorithm(Metrics):
         self._mutation_rate = mutation_rate
         self._population = []
         self._fittest_history = []
+        self._time_history = []
+        self._improvement_history = []
 
     def _init_population(self):
         for _ in range(self._population_size):
@@ -100,11 +102,19 @@ class GeneticAlgorithm(Metrics):
         self._population = best + offspring
 
     def find_optima(self) -> tuple[list[str], Union[str, float]]:
+        self._fittest_history = []
+        self._time_history = []
+        self._improvement_history = []
+
         self._start_timer()
         self._init_population()
         for _ in range(self._generations):
+            prev_fittest = self._population[0][0]
             self._evolve()
+
             self._fittest_history.append(self._population[0][0])
+            self._time_history.append(self._raw_time)
+            self._improvement_history.append((self._fittest_history[-1], prev_fittest))
 
         self._path = self._population[0][1]
         self._total_distance = self._population[0][0]
@@ -115,6 +125,14 @@ class GeneticAlgorithm(Metrics):
     @property
     def fittest_history(self):
         return self._fittest_history
+
+    @property
+    def time_history(self):
+        return self._time_history
+
+    @property
+    def improvement_history(self):
+        return self._improvement_history
 
     def report(self, total_nodes: int = 0) -> str:
         report = super().report(total_nodes)
@@ -147,10 +165,20 @@ class SimulatedAnnealing(Metrics):
         self._minimum_temperature = minimum_temperature
         self._temperature = 0
         self._bests_history = []
+        self._time_history = []
+        self._improvement_history = []
 
     @property
     def bests_history(self):
         return self._bests_history
+
+    @property
+    def time_history(self):
+        return self._time_history
+
+    @property
+    def improvement_history(self):
+        return self._improvement_history
 
     @staticmethod
     def _generate_neighbor(current_solution: list) -> list:
@@ -161,6 +189,10 @@ class SimulatedAnnealing(Metrics):
         return new_solution
 
     def find_optima(self) -> tuple[list[str], Union[str, float]]:
+        self._bests_history = []
+        self._time_history = []
+        self._improvement_history = []
+
         self._start_timer()
         current_solution = list(self._g.nodes.keys())
         self._temperature = self._initial_temperature
@@ -174,6 +206,8 @@ class SimulatedAnnealing(Metrics):
                 current_solution = new_solution
 
             self._bests_history.append(current_solution_distance)
+            self._time_history.append(self._raw_time)
+            self._improvement_history.append((calculate_distance(self._g, current_solution), current_solution_distance))
             self._temperature *= self._alpha
 
         self._path = current_solution
@@ -206,9 +240,8 @@ def build_graph(**kwargs) -> tuple:
             matrix[i][col] = edges[i][j]
             matrix[col][i] = edges[i][j]
 
-    graph = False
-    if "show_graph" in kwargs:
-        graph = kwargs["show_graph"]
+    graph = "show_graph" in kwargs and kwargs["show_graph"]
+    if graph:
         logging.warning("Mostrar el grafo no esta soportado")
         logging.info("Mostrando matriz de distancias para creación del grafo")
         for k, line in enumerate(matrix):
@@ -237,6 +270,16 @@ def graph_genetic(fittest_history):
     plt.show()
 
 
+def graph_costs(percentage_improvement: list, time_history: list, algorithm_name: str):
+    plt.plot(time_history, percentage_improvement, marker="x", color="#0000FF")
+    plt.title(f"{algorithm_name}: mejora de la solución contra tiempo")
+    plt.xlabel("Tiempo (ms)")
+    plt.ylabel("Mejora en %")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+
 def run(**kwargs):
     g, graph = build_graph(**kwargs)
 
@@ -246,6 +289,9 @@ def run(**kwargs):
     genetic_algorithm.find_optima()
     print(genetic_algorithm.report(total_nodes=len(g)))
 
+    # Por alguna razón, utilizar la misma referencia al grafo ocasiona cambios en los resultados de tiempos
+    kwargs["show_graph"] = False
+    g, _ = build_graph(**kwargs)
     simulated_annealing = SimulatedAnnealing(
         g, kwargs["initial_temperature"], kwargs["minimum_temperature"], kwargs["cooling_rate"]
     )
@@ -256,6 +302,20 @@ def run(**kwargs):
         return
 
     multiprocessing.Process(target=graph_genetic, args=(genetic_algorithm.fittest_history,)).start()
+
+    args = (
+        [(100 - (v[0] * 100 / v[1])) if i != 0 else 0 for i, v in enumerate(genetic_algorithm.improvement_history)],
+        [(t[1] - t[0]) / 10e6 for t in genetic_algorithm.time_history],  # Se hacen postprocesados para evitar alentar
+        "Algoritmo genético"                                             # los algoritmos
+    )
+    multiprocessing.Process(target=graph_costs, args=args).start()
+
+    args = (
+        [(100 - (v[0] * 100 / v[1])) if i != 0 else 0 for i, v in enumerate(simulated_annealing.improvement_history)],
+        [(t[1] - t[0]) / 10e6 for t in simulated_annealing.time_history],
+        "Recocido simulado"
+    )
+    multiprocessing.Process(target=graph_costs, args=args).start()
 
     plt.plot(simulated_annealing.bests_history, marker="o", color="#0000FF")
     plt.title("Recocido simulado: mejor distancia por iteración")

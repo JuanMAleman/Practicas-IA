@@ -245,6 +245,11 @@ están en estos subconjuntos, el algoritmo no podrá encontrar
 el otro nodo. Los grafos urbanos no siempre cumplen la condición 
 de ser completos.
 
+Si lo que se quiere saber es si se puede llegar de un lugar 'A' a 
+un lugar 'B' de forma "rápida", DFS funciona bien, pero no funciona
+si se requiere saber cuál es el camino con menos salto o menos
+distancia.
+
 - **¿Cuándo UCS y BFS producen exactamente el mismo resultado?**
 
 Producen el mismo resultado cuando el camino de menos arcos (BFS)
@@ -362,11 +367,11 @@ python3 main.py s3 -g -gs 300 -p 100 -b 20 -m 0.6 -c 0.9999
 <pre>
 Reporte de Algoritmo genético
   Nodos totales:    10
-  Ruta:             J → I → D → F → E → B → C → A → H → G
+  Ruta:             G → H → A → C → B → E → F → D → I → J
   Distancia total:  189
   Total de arcos:   10
     Tiempo de
-    ejecución:      476.5289 ms
+    ejecución:      47.0158 ms
     Tamaño de
     población:       100
   Generaciones:      300
@@ -379,11 +384,11 @@ Reporte de Algoritmo genético
 <pre>
 Reporte de Recocido simulado
   Nodos totales:    10
-  Ruta:             G → B → D → J → I → E → F → C → A → H
-  Distancia total:  207
+  Ruta:             J → I → D → F → E → B → C → A → H → G
+  Distancia total:  189
   Total de arcos:   10
     Tiempo de
-    ejecución:      713.4700 ms
+    ejecución:      107.0428 ms
     Temperatura
       inicial:      10000
     Temperatura
@@ -394,6 +399,159 @@ Reporte de Recocido simulado
 
 | ![GA](img/GA_2.png) | ![GA](img/SA_2.png) |
 |---------------------|---------------------|
+
+
+## Preguntas de análisis
+
+- **¿Cómo afecta la temperatura inicial T₀ de SA a la diversidad de soluciones exploradas?**
+
+Utilizar una temperatura inicial más alta hace que el algoritmo
+realice más iteraciones y la calidad sea más alta, incrementar la 
+temperatura tiene un efecto similar a ralentizar el enfriamiento.
+
+Aunque, por otra parte, la _alta temperatura_ invita a que se tomen
+soluciones subóptimas de forma más frecuente, lo que retrasa la 
+convergencia.
+
+- **¿Cómo se compara el Algoritmo Genético respecto a SA en términos de calidad/tiempo?**
+
+Depende bastante de los parámetros utilizados para cada algoritmo.
+
+Utilizando los parámetros establecidos por defecto, sin algún 
+criterio específico:
+
+En términos de calidad, el GA suele tener bastante mejora en 
+poco tiempo, pero parece más propenso a quedarse en los óptimos 
+locales, donde cada iteración no resulta en más mejoras. 
+
+Por otra parte, el SA tiene una convergencia lenta y al inicio
+la mejora porcentual puede incluso volverse negativa, pero a 
+medida que pasa el tiempo, la calidad mejora bastante, pero no 
+llega a la calidad del GA.
+
+Cambiando un poco los parámetros e intentando mejorarlos, pero que
+consuman un tiempo similar, hay ocasiones donde el SA tiene una 
+mejor ruta, otras veces no. El GA suele tener resultados más 
+consistentes, con variaciones de no más de 50 unidades, medidos de
+forma empirica, donde, por otra parte, el SA suele tener 
+variaciones bastante más importantes.
+
+```shell
+# Parámetros para las siguientes pruebas
+python3 main.py s3 -i 600 -c 0.999 -p 90 -gs 30 -b 10 -m 0.3 -g
+```
+
+Ambos algoritmos consumen alrededor de 6.2 ms, en esta prueba
+SA obtuvo un mejor resultado.
+
+<pre>
+Reporte de Algoritmo genético
+  Nodos totales:    10
+  Ruta:             J → D → I → A → H → G → B → C → F → E
+  Distancia total:  211
+  Total de arcos:   10
+    Tiempo de
+    ejecución:      6.2664 ms
+    Tamaño de
+    población:       90
+  Generaciones:      30
+   Cantidad de
+     mejores
+   seleccionados:   10
+  Tasa de mutación:  0.3
+</pre>
+
+<pre>
+Reporte de Recocido simulado
+  Nodos totales:    10
+  Ruta:             G → H → A → B → C → F → E → I → D → J
+  Distancia total:  154
+  Total de arcos:   10
+    Tiempo de
+    ejecución:      6.2254 ms
+    Temperatura
+      inicial:      600.0
+    Temperatura
+      minima:       10
+      Tasa de
+    enfriamiento:   0.999
+</pre>
+
+| ![GA](img/GA_3.png)  | ![GA](img/SA_3.png)  |
+|----------------------|----------------------|
+| ![GA](img/GA_3m.png) | ![GA](img/SA_3m.png) |
+
+
+En esta otra prueba ambos llegaron a la misma respuesta (el 
+mejor óptimo visto hasta el momento),
+
+<pre>
+Reporte de Algoritmo genético
+  Nodos totales:    10
+  Ruta:             G → H → A → B → C → F → E → I → D → J
+  Distancia total:  154
+  Total de arcos:   10
+    Tiempo de
+    ejecución:      6.2475 ms
+    Tamaño de
+    población:       90
+  Generaciones:      30
+   Cantidad de
+     mejores
+   seleccionados:   10
+  Tasa de mutación:  0.3
+</pre>
+
+<pre>
+Reporte de Recocido simulado
+  Nodos totales:    10
+  Ruta:             J → D → I → E → F → C → B → A → H → G
+  Distancia total:  154
+  Total de arcos:   10
+    Tiempo de
+    ejecución:      6.1909 ms
+    Temperatura
+      inicial:      600.0
+    Temperatura
+      minima:       10
+      Tasa de
+    enfriamiento:   0.999
+</pre>
+
+En esta prueba GA tuvo un mejor resultado,
+
+<pre>
+Reporte de Algoritmo genético
+  Nodos totales:    10
+  Ruta:             J → D → I → E → F → B → C → A → H → G
+  Distancia total:  167
+  Total de arcos:   10
+    Tiempo de
+    ejecución:      6.2593 ms
+    Tamaño de
+    población:       90
+  Generaciones:      30
+   Cantidad de
+     mejores
+   seleccionados:   10
+  Tasa de mutación:  0.3
+</pre>
+
+<pre>
+Reporte de Recocido simulado
+  Nodos totales:    10
+  Ruta:             I → A → H → G → C → B → E → F → D → J
+  Distancia total:  250
+  Total de arcos:   10
+    Tiempo de
+    ejecución:      6.2207 ms
+    Temperatura
+      inicial:      600.0
+    Temperatura
+      minima:       10
+      Tasa de
+    enfriamiento:   0.999
+</pre>
 
 
 ## Referencias

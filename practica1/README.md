@@ -71,6 +71,8 @@ python3 main.py s3 -h
 
 ### Historial de versiones
 
+#### v0.1.2 Última parte del reporte de la sección 3
+
 #### v0.1.1 Implementación de `SimulatedAnnealing` y reporte de la sección 3
 
 #### v0.1.0 Implementación de `GeneticAlgorithm`

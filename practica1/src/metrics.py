@@ -17,17 +17,21 @@ class Metrics:
 
     def _start_timer(self):
         # https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-python-programs-execution
-        self._start_time = time.time()
+        self._start_time = time.time_ns()
 
     def _end_timer(self):
-        self._end_time = time.time()
+        self._end_time = time.time_ns()
 
     @property
     def _is_timeout(self) -> bool:
         if self._start_time == -1:
             logging.warning("_is_timeout: no se realizó llamada a _start_timer")
             return False
-        return (time.time() - self._start_time) > self._timeout
+        return (time.time_ns() - self._start_time) > self._timeout
+
+    @property
+    def _raw_time(self):
+        return self._start_time, time.time_ns()
 
     @property
     def elapsed_time(self) -> str:  # Tiempo de ejecución
