@@ -25,11 +25,12 @@ def HGrafo():
 
 def medir_ejecucion(funcion_algoritmo, *args):
     inicio = time.perf_counter()
-    p_directo, p_real, nodos_exp = funcion_algoritmo(*args)
+    p_directo, p_real, nodos_exp, profundidad = funcion_algoritmo(*args)
     fin = time.perf_counter()
     
     tiempo_ms = (fin - inicio) * 1000  # Convertir segundos a milisegundos
-    return p_directo, p_real, nodos_exp, tiempo_ms
+    b_estrella = calcular_b_estrella(nodos_exp, profundidad)
+    return p_directo, p_real, nodos_exp, tiempo_ms, b_estrella, profundidad
 
 def distancia_euclidiana(y1, x1, y2, x2):
     # Conversion a metros
@@ -37,6 +38,48 @@ def distancia_euclidiana(y1, x1, y2, x2):
     dx = (x2 - x1) * 111000 * math.cos(lat_media_rad)
     dy = (y2 - y1) * 111000
     return math.sqrt(dx**2 + dy**2)
+
+def calcular_b_estrella(N, d, tol=1e-5, max_iter=100):
+    """
+    Calcula el factor de ramificación efectivo b* de forma numéricamente estable.
+    N: Nodos explorados
+    d: Profundidad de la solución
+    """
+    # Casos límite
+    if d <= 0 or N <= 0:
+        return 0.0
+    if N <= d:
+        return 1.0
+
+    low = 1.0
+    high = float(N)  # El valor de b* jamás superará N
+
+    for _ in range(max_iter):
+        mid = (low + high) / 2.0
+        
+        # Evitar división por cero cerca de mid = 1
+        if abs(mid - 1.0) < 1e-9:
+            val = d + 1
+        else:
+            try:
+                # Si mid^(d+1) es muy grande, calculamos usando logaritmos o capturamos la excepción
+                log_val = (d + 1) * math.log(mid)
+                if log_val > 700:  # e^700 está cerca del límite float
+                    val = float('inf')
+                else:
+                    val = (math.pow(mid, d + 1) - 1.0) / (mid - 1.0)
+            except OverflowError:
+                val = float('inf')
+
+        if abs(val - (N + 1)) < tol:
+            return mid
+
+        if val > (N + 1):
+            high = mid
+        else:
+            low = mid
+
+    return (low + high) / 2.0
 
 Grafo_principal = HGrafo()
 
@@ -89,6 +132,7 @@ def AlgoritmoAeuclidiano(SubG_punto, empresa, destinos):
     peso_aristasDirectas2 = 0
 
     nodos_expandidos = 0
+    profundidad_total = 0
     
     # Lista con todos los destinos a visitar
     pendientes = set(destinos) - {empresa}
@@ -172,6 +216,7 @@ def AlgoritmoAeuclidiano(SubG_punto, empresa, destinos):
             if camino_encontrado:
                 curr = nodo_objetivo
                 while curr in padres:
+                    profundidad_total += 1
                     p = padres[curr]
                     # Identificador='euclidiana', aristas camino real
                     datos_edge = SubG_punto.get_edge_data(p, curr)[0]
@@ -182,7 +227,7 @@ def AlgoritmoAeuclidiano(SubG_punto, empresa, destinos):
             visitados.add(nodo_objetivo)
             pendientes.remove(nodo_objetivo)
             nodo_actual = nodo_objetivo 
-    return peso_aristasDirectas, peso_aristasDirectas2, nodos_expandidos
+    return peso_aristasDirectas, peso_aristasDirectas2, nodos_expandidos, profundidad_total
 
 def AlgoritmoAhaversine(SubG_punto, empresa, destinos):
     nodo_actual = empresa
@@ -192,6 +237,7 @@ def AlgoritmoAhaversine(SubG_punto, empresa, destinos):
     peso_aristasDirectas2 = 0
 
     nodos_expandidos = 0
+    profundidad_total = 0
     
     # Lista con todos los destinos a visitar
     pendientes = set(destinos) - {empresa}
@@ -277,6 +323,7 @@ def AlgoritmoAhaversine(SubG_punto, empresa, destinos):
             if camino_encontrado:
                 curr = nodo_objetivo
                 while curr in padres:
+                    profundidad_total += 1
                     p = padres[curr]
                     datos_edge = SubG_punto.get_edge_data(p, curr)[0]
                     datos_edge['tipo'] = "haversine"
@@ -286,7 +333,7 @@ def AlgoritmoAhaversine(SubG_punto, empresa, destinos):
             visitados.add(nodo_objetivo)
             pendientes.remove(nodo_objetivo)
             nodo_actual = nodo_objetivo 
-    return peso_aristasDirectas, peso_aristasDirectas2, nodos_expandidos
+    return peso_aristasDirectas, peso_aristasDirectas2, nodos_expandidos, profundidad_total
 
 def heuristica_combinada(y1, x1, y2, x2, alpha=0.8, costo_giro=15):
     # Distancia euclidiana en metros
@@ -309,6 +356,7 @@ def AlgoritmoACombinado(SubG_punto, empresa, destinos):
     pendientes = set(destinos) - {empresa}
 
     nodos_expandidos = 0
+    profundidad_total = 0
 
     while pendientes:
         x1, y1 = SubG_punto.nodes[nodo_actual]['x'], SubG_punto.nodes[nodo_actual]['y']
@@ -370,6 +418,7 @@ def AlgoritmoACombinado(SubG_punto, empresa, destinos):
             if camino_encontrado:
                 curr = nodo_objetivo
                 while curr in padres:
+                    profundidad_total += 1
                     p = padres[curr]
                     datos_edge = SubG_punto.get_edge_data(p, curr)[0]
                     datos_edge['tipo'] = "combinada"
@@ -379,7 +428,7 @@ def AlgoritmoACombinado(SubG_punto, empresa, destinos):
             pendientes.remove(nodo_objetivo)
             nodo_actual = nodo_objetivo 
             
-    return peso_aristasDirectas, peso_aristasDirectas2, nodos_expandidos
+    return peso_aristasDirectas, peso_aristasDirectas2, nodos_expandidos, profundidad_total
 
 # ---------------------------
 # Funcion Greedy Best-First (solo h, sin g)
@@ -392,6 +441,7 @@ def AlgoritmoGreedyEuclidiano(SubG_punto, empresa, destinos):
     peso_aristasDirectas2 = 0
 
     nodos_expandidos = 0
+    profundidad_total = 0
     
     pendientes = set(destinos) - {empresa}
 
@@ -449,6 +499,7 @@ def AlgoritmoGreedyEuclidiano(SubG_punto, empresa, destinos):
             if camino_encontrado:
                 curr = nodo_objetivo
                 while curr in padres:
+                    profundidad_total += 1
                     p = padres[curr]
                     datos_edge = SubG_punto.get_edge_data(p, curr)[0]
                     datos_edge['tipo'] = "greedy"
@@ -458,7 +509,7 @@ def AlgoritmoGreedyEuclidiano(SubG_punto, empresa, destinos):
             pendientes.remove(nodo_objetivo)
             nodo_actual = nodo_objetivo 
             
-    return peso_aristasDirectas, peso_aristasDirectas2, nodos_expandidos
+    return peso_aristasDirectas, peso_aristasDirectas2, nodos_expandidos, profundidad_total
 
 
 gdf_nodes, gdf_edges = ox.graph_to_gdfs(Grafo_principal)
@@ -510,26 +561,26 @@ for nodo, datos in SubG_punto.nodes(data=True):
         colores_nodos.append('#999999')    # Gris para nodos normales
         tamanios_nodos.append(15)          # Pequeño
 
-Peso_Directo_A, Peso_Real_A, Nodos_A, Tiempo_A = medir_ejecucion(AlgoritmoAeuclidiano, SubG_punto, empresa, destinos)
+Peso_Directo_A, Peso_Real_A, Nodos_A, Tiempo_A, B_Estrella_A, Sol_A = medir_ejecucion(AlgoritmoAeuclidiano, SubG_punto, empresa, destinos)
 
-Peso_Directo_H, Peso_Real_H, Nodos_H, Tiempo_H = medir_ejecucion(AlgoritmoAhaversine, SubG_haversine, empresa, destinos)
+Peso_Directo_H, Peso_Real_H, Nodos_H, Tiempo_H, B_Estrella_H, Sol_H = medir_ejecucion(AlgoritmoAhaversine, SubG_haversine, empresa, destinos)
 
-Peso_Directo_C, Peso_Real_C, Nodos_C, Tiempo_C = medir_ejecucion(AlgoritmoACombinado, SubG_combinada, empresa, destinos)
+Peso_Directo_C, Peso_Real_C, Nodos_C, Tiempo_C, B_Estrella_C, Sol_C = medir_ejecucion(AlgoritmoACombinado, SubG_combinada, empresa, destinos)
 
-Peso_Directo_G, Peso_Real_G, Nodos_G, Tiempo_G = medir_ejecucion(AlgoritmoGreedyEuclidiano, SubG_greedy, empresa, destinos)
+Peso_Directo_G, Peso_Real_G, Nodos_G, Tiempo_G, B_Estrella_G, Sol_G = medir_ejecucion(AlgoritmoGreedyEuclidiano, SubG_greedy, empresa, destinos)
 
 print(f"Distancia Euclidiana Total: {Peso_Directo_A:.2f} m\n")
 print(f"Distancia Haversine total(Haversine): {Peso_Directo_H:.2f} m")
 
 # Impresion de resultados de la comparacion entre algoritmos(A* y Greedy Best-First)
-print("=" * 70)
-print(f"{'Algoritmo':<22} | {'Distancia (m)':<13} | {'Nodos Exp.':<10} | {'Tiempo (ms)':<10}")
-print("=" * 70)
-print(f"{'A* Euclidiana':<22} | {Peso_Real_A:<13.2f} | {Nodos_A:<10} | {Tiempo_A:<10.2f}")
-print(f"{'A* Haversine':<22} | {Peso_Real_H:<13.2f} | {Nodos_H:<10} | {Tiempo_H:<10.2f}")
-print(f"{'A* Combinada (H3)':<22} | {Peso_Real_C:<13.2f} | {Nodos_C:<10} | {Tiempo_C:<10.2f}")
-print(f"{'Greedy Best-First':<22} | {Peso_Real_G:<13.2f} | {Nodos_G:<10} | {Tiempo_G:<10.2f}")
-print("=" * 70)
+print("=" * 97)
+print(f"{'Algoritmo':<22} | {'Distancia (m)':<13} | {'Nodos Exp.':<10} | {'Tiempo (ms)':<11} | {'b*':<8} | {'N. Solución':<11}")
+print("=" * 97)
+print(f"{'A* Euclidiana':<22} | {Peso_Real_A:<13.2f} | {Nodos_A:<10} | {Tiempo_A:<11.2f} | {B_Estrella_A:<8.3f} | {Sol_A:<11}")
+print(f"{'A* Haversine':<22} | {Peso_Real_H:<13.2f} | {Nodos_H:<10} | {Tiempo_H:<11.2f} | {B_Estrella_H:<8.3f} | {Sol_H:<11}")
+print(f"{'A* Combinada (H3)':<22} | {Peso_Real_C:<13.2f} | {Nodos_C:<10} | {Tiempo_C:<11.2f} | {B_Estrella_C:<8.3f} | {Sol_C:<11}")
+print(f"{'Greedy Best-First':<22} | {Peso_Real_G:<13.2f} | {Nodos_G:<10} | {Tiempo_G:<11.2f} | {B_Estrella_G:<8.3f} | {Sol_G:<11}")
+print("=" * 97)
 
 
 colores_aristas_a = []
@@ -572,7 +623,7 @@ fig1, ax1 = ox.plot_graph(
     show=False, 
     close=False
 )
-ax1.set_title(f"A* Search (Óptimo) - Total: {Peso_Real_A:.1f}m", fontsize=14)
+ax1.set_title(f"A* Euclidiano - Total: {Peso_Real_A:.1f}m", fontsize=14)
 
 # Dibuja Greedy figure 2
 fig2, ax2 = ox.plot_graph(

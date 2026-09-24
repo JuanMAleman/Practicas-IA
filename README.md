@@ -21,7 +21,7 @@ source venv/bin/activate
 **Librerías**
 
 ```bash
-pip install osmnx networkx matplotlib shapely
+pip install osmnx networkx matplotlib pytest
 ```
 
 ## Estructura del Proyecto
@@ -43,6 +43,18 @@ pip install osmnx networkx matplotlib shapely
 └── README.md
 ```
 
+## Especificaciones del Equipo de Prueba
+
+| Componente         | Detalle                       |
+|--------------------|-------------------------------|
+| Equipo             | HP Elite X2 1012 G2           |
+| Procesador         | Intel core i5 7300U           |
+| Memoria RAM        | 8.00 GB LPDDR3-SDRAM 1867 Mhz |
+| Almacenamiento     | 238 GB SSD                    |
+| Sistema Operativo  | Windows 10 pro 22H2           |
+| Tarjeta Gráfica    | Intel HD Graphics 620         |
+| Python             | 3.14.7                        |
+
 ## Ubicarse en la Carpeta Raíz del Proyecto
 
 ```bash
@@ -60,7 +72,5 @@ python src/fase2.py
 **Pruebas**
 
 ```bash
-python tests/test1.py
-python tests/test2.py
-python tests/test3.py
+pytest -v -s
 ```
