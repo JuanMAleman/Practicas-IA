@@ -3,9 +3,6 @@
 ## 1.1. Descripción general
 
 El conjunto de datos **Telco Customer Churn** contiene información sobre clientes de una empresa de telecomunicaciones, incluyendo características demográficas, servicios contratados, modalidades de facturación y permanencia.
-
-Su análisis tiene como finalidad estudiar los factores asociados al abandono del servicio y preparar los datos para desarrollar un modelo de clasificación binaria.
-
 ## 1.2. Características del dataset
 
 |Característica|Descripción|
@@ -27,9 +24,7 @@ La variable `Churn` indica si un cliente ha abandonado el servicio.
     
 - **No:** el cliente no abandonó el servicio.
     
-
 En un escenario de aplicación real, esta variable sería el resultado que el modelo intentaría predecir utilizando información disponible antes del abandono.
-
 ## 1.4. Identificación preliminar de los atributos
 
 El dataset contiene información relacionada con:
@@ -41,7 +36,6 @@ El dataset contiene información relacionada con:
 - **Información contractual:** tipo de contrato, facturación y método de pago.
     
 - **Información económica y temporal:** antigüedad, cargos mensuales y cargos totales.
-    
 ## 1.4.1. Diccionario de datos
 
 | Atributo           | Descripción                                | Tipo conceptual                           |
@@ -79,7 +73,6 @@ Durante la inspección preliminar se identificaron los siguientes aspectos:
     
 4. Algunas variables incluyen categorías como `No phone service`, que representan la ausencia de contratación de un servicio y no deben confundirse con valores faltantes.
     
-
 ## 1.6. Consideraciones pendientes
 
 Se requiere completar la revisión de:
@@ -94,25 +87,20 @@ Se requiere completar la revisión de:
     
 - Riesgos éticos y decisiones que podrían afectar desigualmente a distintos grupos.
     
-
 ## 1.7. Uso de inteligencia artificial
 
-Se utilizó ChatGPT como herramienta de apoyo para estructurar el procedimiento exploratorio, explicar el código Python y organizar la documentación inicial.
+Se utilizó ChatGPT como herramienta de apoyo para estructurar el procedimiento exploratorio, explicar funciones de código Python.
 
-Las dimensiones del dataset, tipos de datos y categorías descritas fueron comprobadas mediante la ejecución de código en Jupyter Notebook. Las decisiones de preprocesamiento y las conclusiones del análisis quedan pendientes de verificación.
-
+Las dimensiones del dataset, tipos de datos y categorías descritas fueron comprobadas mediante la ejecución de código en Jupyter Notebook.
 ## 1.8. Unidad de análisis, disponibilidad de la variable objetivo y riesgos
 
 ### Unidad de análisis
-
 Cada fila representa el registro de un cliente de una empresa de telecomunicaciones, incluyendo información demográfica, contractual, servicios contratados, antigüedad y cargos facturados.
 
 ### Disponibilidad de la variable objetivo
-
 La variable `Churn` indica si el cliente abandonó el servicio. En una aplicación predictiva real, esta información solamente estaría disponible después de observar el abandono durante un periodo definido.
 
 Por lo tanto, para predecir el abandono futuro, el modelo deberá utilizar variables disponibles antes del evento y no información obtenida posteriormente.
-
 ### Identificadores y posibles fugas de información
 
 El atributo `customerID` funciona como identificador del cliente. Se propone excluirlo de las variables predictoras, conservándolo únicamente para identificación y trazabilidad de registros cuando corresponda.
@@ -120,13 +108,11 @@ El atributo `customerID` funciona como identificador del cliente. Se propone exc
 Las variables `tenure` y `TotalCharges` requieren especial atención porque sus valores pueden depender del momento en que se realiza la predicción. Se deberá comprobar que correspondan a información disponible antes del abandono.
 
 La variable `Churn` se utilizará exclusivamente como objetivo de clasificación.
-
 ### Riesgos éticos
 
 El dataset incluye información demográfica, como el género y la condición de adulto mayor, que podría estar relacionada con diferencias en el comportamiento de los clientes o en las decisiones comerciales.
 
 El uso de modelos predictivos deberá considerar posibles diferencias de desempeño entre grupos. En particular, se recomienda evaluar métricas de clasificación desagregadas para identificar diferencias relevantes en errores, sensibilidad y precisión.
-
 ### Posibles decisiones con impacto desigual
 
 Las predicciones podrían utilizarse para ofrecer promociones, priorizar atención o implementar estrategias de retención.
@@ -134,7 +120,6 @@ Las predicciones podrían utilizarse para ofrecer promociones, priorizar atenci�
 Sin controles adecuados, algunos grupos podrían recibir menos beneficios o ser clasificados incorrectamente con mayor frecuencia.
 
 Por ello, las decisiones basadas en el modelo deben contar con criterios transparentes y mecanismos de evaluación de resultados entre grupos.
-
 ### Limitaciones
 
 El dataset no proporciona por sí solo toda la información temporal y contextual necesaria para demostrar que las variables predictoras estarían disponibles en el momento de uso. Estas restricciones deberán reconocerse al interpretar los resultados.
@@ -154,13 +139,6 @@ El dataset **Telco Customer Churn** se obtuvo del repositorio público de IBM de
 **Formato:** CSV.
 
 **Dimensiones verificadas:** 7,043 registros y 21 columnas.
-
-### Licencia y condiciones de uso
-
-El proyecto de IBM se distribuye bajo la licencia Apache License 2.0. Sin embargo, la documentación del repositorio señala que los componentes de terceros pueden estar sujetos a licencias independientes y no establece expresamente una licencia diferenciada para el archivo CSV.
-
-Por esta razón, se reconoce la procedencia original del dataset y se evita asumir derechos de redistribución adicionales no documentados.
-
 ### Reproducibilidad y conservación de datos
 
 El archivo original se conserva dentro de la carpeta `datasets/` del proyecto, sin modificaciones.
