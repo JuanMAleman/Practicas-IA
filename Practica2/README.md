@@ -1,3 +1,19 @@
+# Prácticas de IA
+
+https://github.com/JuanMAleman/Practicas-IA
+
+En este repositorio se encuentran todas las prácticas que
+se realizaran a lo largo del semestre 27/1 en la materia 
+de inteligencia artificial en el grupo 6CV2.
+
+### Integrantes de equipo
+
+- Juan Manriquez [@JuanMAleman](https://github.com/JuanMAleman/)
+- Cristopher De La O [@cdelaof26](https://github.com/cdelaof26/)
+- José Omar Aguilar [@Jose-omar-aguilar](https://github.com/Jose-omar-aguilar)
+- Ana Fabiola Robles [@FabsRobles](https://github.com/FabsRobles)
+- Axel Paredes  [@A-20AA](https://github.com/A-20AA)
+
 # Práctica 2. Análisis Exploratorio de Datos (EDA) y preparación de datasets
 
 ## Descripción
@@ -57,6 +73,8 @@ Las decisiones metodológicas, resultados y conclusiones deberán verificarse me
 
 Esta declaración se actualizará con los usos específicos y las verificaciones realizadas.
 
-## Resultados y conclusiones
 
-Pendientes hasta completar los experimentos.
+
+
+
+
