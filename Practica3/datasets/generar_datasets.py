@@ -149,10 +149,4 @@ def mostrar_informacion_dataset(datos):
     print("\nEstadísticas descriptivas:")
     print(X.describe().round(2).to_string())
 
-    # Comprobar los valores faltantes
-    print("\nValores faltantes:")
-    faltantes = X.isnull().sum()
-    print(faltantes.to_string())
-    print(f"\nTotal de valores faltantes: {faltantes.sum()}")
-
     print("=" * 60)
