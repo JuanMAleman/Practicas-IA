@@ -1,0 +1,14 @@
+{
+  "MLP": {
+    "params": 109386,
+    "val_acc": 0.7612,
+    "train_acc": 0.75,
+    "s_per_epoch": 0.19371063333528582
+  },
+  "CNN": {
+    "params": 105866,
+    "val_acc": 0.7274,
+    "train_acc": 0.66,
+    "s_per_epoch": 2.0674049333368507
+  }
+}

@@ -1,0 +1,1 @@
+## Declaración de uso de inteligencia artificial
